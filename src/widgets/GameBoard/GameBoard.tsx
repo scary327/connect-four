@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import styles from "./GameBoard.module.css";
 import { useIndicator } from "@shared/hooks/useIndicator";
 import { useGameBoard } from "@shared/hooks/useGameBoard";
@@ -24,8 +24,12 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
     handleColumnClick,
   } = useGameBoard(rows, columns);
 
-  const columnData = Array.from({ length: columns }, (_, colIndex) =>
-    Array.from({ length: rows }, (_, rowIndex) => board[rowIndex][colIndex])
+  const columnData = useMemo(
+    () =>
+      Array.from({ length: columns }, (_, colIndex) =>
+        Array.from({ length: rows }, (_, rowIndex) => board[rowIndex][colIndex])
+      ),
+    [board, columns, rows]
   );
 
   return (

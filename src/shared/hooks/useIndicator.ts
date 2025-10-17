@@ -14,34 +14,31 @@ export const useIndicator = (columns: number) => {
 
   const updateIndicator = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      if (!boardRef.current) return;
+      const board = boardRef.current;
+      if (!board) return;
 
-      const rect = boardRef.current.getBoundingClientRect();
+      //рассчитываем позицию индикатора
+      const boardRect = board.getBoundingClientRect();
+      const styles = getComputedStyle(board);
+      const padding = parseFloat(styles.paddingLeft || "0");
+      const gap = parseFloat(styles.gap || "0");
+      const mouseX = event.clientX - boardRect.left - padding;
+      const contentWidth = boardRect.width - padding * 2;
+      const columnWidthWithGap = contentWidth / columns;
+      const calculatedColumn = Math.floor(mouseX / columnWidthWithGap);
+      const columnIndex = Math.max(0, Math.min(calculatedColumn, columns - 1));
 
-      const style = getComputedStyle(boardRef.current);
-      const paddingLeft = parseFloat(style.paddingLeft || "0");
-      const paddingRight = parseFloat(style.paddingRight || "0");
-      const gap = parseFloat(style.gap || "0");
-      const contentWidth = rect.width - paddingLeft - paddingRight;
-      const totalGapWidth = Math.max(0, columns - 1) * gap;
-      const columnsWidth = Math.max(0, contentWidth - totalGapWidth);
-      const columnWidth = columnsWidth / columns;
-      const x = event.clientX - rect.left - paddingLeft;
-
-      let column = Math.floor(x / (columnWidth + gap));
-      if (column < 0) column = 0;
-      if (column >= columns) column = columns - 1;
-
-      const centerXViewport =
-        rect.left +
-        paddingLeft +
-        column * (columnWidth + gap) +
+      const columnWidth = (contentWidth - gap * (columns - 1)) / columns;
+      const centerX =
+        boardRect.left +
+        padding +
+        columnIndex * (columnWidth + gap) +
         columnWidth / 2;
 
       setIndicatorState({
-        column,
-        x: centerXViewport,
-        y: rect.top,
+        column: columnIndex,
+        x: centerX,
+        y: boardRect.top,
       });
     },
     [columns]

@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useLocalStorage } from "./useLocalStorage";
 
 export type CellValue = null | "orange";
 export type AnimationType = "drop" | "fall";
@@ -26,7 +27,12 @@ export const useGameBoard = (
   );
   const [fallingChip, setFallingChip] = useState<FallingChipState | null>(null);
   const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
-  const [animationType, setAnimationType] = useState<AnimationType>("fall");
+
+  // Используем useLocalStorage для сохранения типа анимации
+  const [animationType, setAnimationType] = useLocalStorage<AnimationType>(
+    "connect4-animation-type",
+    "fall"
+  );
 
   const handleColumnClick = useCallback(
     (columnIndex: number) => {
