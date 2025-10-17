@@ -1,6 +1,6 @@
-import { lazy, useRef } from "react";
-
-const GameBoard = lazy(() => import("@widgets/GameBoard/GameBoard"));
+import { useRef } from "react";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/router";
 
 function App() {
   const renderCount = useRef(0);
@@ -9,12 +9,7 @@ function App() {
   // eslint-disable-next-line no-console
   console.log(`[App] render #${renderCount.current}`);
 
-  return (
-    <div className="centered">
-      <h1>Connect Four</h1>
-      <GameBoard rows={6} columns={7} />
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
