@@ -21,16 +21,11 @@ export const useIndicator = (columns: number) => {
       const style = getComputedStyle(boardRef.current);
       const paddingLeft = parseFloat(style.paddingLeft || "0");
       const paddingRight = parseFloat(style.paddingRight || "0");
-      const gap = parseFloat(style.gap || style.gridGap || "0");
-
+      const gap = parseFloat(style.gap || "0");
       const contentWidth = rect.width - paddingLeft - paddingRight;
-
       const totalGapWidth = Math.max(0, columns - 1) * gap;
-
       const columnsWidth = Math.max(0, contentWidth - totalGapWidth);
-
       const columnWidth = columnsWidth / columns;
-
       const x = event.clientX - rect.left - paddingLeft;
 
       let column = Math.floor(x / (columnWidth + gap));

@@ -1,0 +1,9 @@
+.settings {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--board-background-color);
+  border-radius: var(--border-radius);
+  width: fit-content;
+  margin: 0 auto 20px;
+}

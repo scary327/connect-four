@@ -1,0 +1,19 @@
+.cell {
+  background-color: var(--cell-color);
+  border-radius: var(--border-radius);
+  min-width: 60px;
+  min-height: 60px;
+  width: 60px;
+  height: 60px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cell:hover {
+  background-color: #3a3a3a;
+}

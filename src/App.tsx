@@ -1,5 +1,5 @@
-import "./App.css";
-import GameBoard from "./components/GameBoard/GameBoard";
+import { lazy } from "react";
+const GameBoard = lazy(() => import("@widgets/GameBoard/GameBoard"));
 
 function App() {
   return (

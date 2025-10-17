@@ -1,0 +1,11 @@
+.column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.column:hover .columnHighlight {
+  opacity: 1;
+}

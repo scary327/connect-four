@@ -1,0 +1,13 @@
+.boardContainer {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.board {
+  display: flex;
+  gap: 8px;
+  background-color: var(--board-background-color);
+  padding: 16px;
+  border-radius: var(--border-radius);
+  width: fit-content;
+}
