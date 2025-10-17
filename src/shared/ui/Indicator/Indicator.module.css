@@ -1,0 +1,17 @@
+.indicator {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -60px);
+  pointer-events: none;
+  transition: left 0.12s ease, top 0.12s ease;
+  z-index: 1000;
+}
+
+.indicator svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 0 8px rgba(124, 77, 255, 0.6));
+  rotate: 180deg;
+}
