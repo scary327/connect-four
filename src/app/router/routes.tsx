@@ -1,29 +1,33 @@
 import type { RouteObject } from "react-router-dom";
 import { URLS } from "./urls";
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import NotFound from "@app/NotFound/NotFound";
+import { Loader } from "@shared/ui/Loader/Loader";
 
 const GameBoard = lazy(() => import("../../widgets/GameBoard/GameBoard"));
+const MenuBar = lazy(() => import("../../widgets/MenuBar/MenuBar"));
 
 export const PublicRoutes: RouteObject[] = [
   {
     path: URLS.MENU,
-    element: <>Menu Page</>,
+    element: <MenuBar />,
   },
   {
     path: URLS.GAME,
     element: (
-      <Suspense fallback={<>Loading...</>}>
-        <div className="centered">
-          <h1>Connect Four</h1>
-          <GameBoard rows={6} columns={7} />
-        </div>
-      </Suspense>
+      <div className="centered">
+        <h1>Connect Four</h1>
+        <GameBoard rows={6} columns={7} />
+      </div>
     ),
   },
   {
     path: URLS.HISTORY,
-    element: <>History Page</>,
+    element: <Loader />,
+  },
+  {
+    path: URLS.SETTINGS,
+    element: <>Settings Page</>,
   },
   {
     path: "*",

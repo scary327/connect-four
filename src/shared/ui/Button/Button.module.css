@@ -14,52 +14,57 @@
   line-height: 1;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.12s ease, box-shadow 0.12s ease,
-    background-color 0.12s ease, border-color 0.12s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   text-decoration: none;
   border: 1px solid transparent;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Primary: soft pastel purple, matches --primary-color */
 .primary {
   color: #f8f8ff;
-  background: linear-gradient(
-    135deg,
-    rgba(124, 77, 255, 0.18) 0%,
-    rgba(149, 117, 255, 0.18) 100%
-  );
-  border-color: rgba(124, 77, 255, 0.22);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  background-color: var(--board-background-color);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .primary:hover:not(.disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 18px rgba(124, 77, 255, 0.06);
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(124, 77, 255, 0.4),
+    0 0 32px rgba(124, 77, 255, 0.2);
 }
 
 .primary:active:not(.disabled) {
-  transform: translateY(0);
+  transform: scale(1.02);
 }
 
 .primary:focus-visible {
-  outline: 3px solid rgba(124, 77, 255, 0.14);
+  outline: 3px solid rgba(124, 77, 255, 0.5);
   outline-offset: 3px;
 }
 
-/* Secondary: subtle transparent button with soft border */
+/* Secondary: фиолетовый бордер и текст */
 .secondary {
-  color: #e8e8e8;
+  color: var(--primary-color, #7c4dff);
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.06);
+  border-color: var(--primary-color, #7c4dff);
 }
 
 .secondary:hover:not(.disabled) {
-  background: rgba(255, 255, 255, 0.02);
+  color: #f8f8ff;
+  background-color: var(--primary-color, #7c4dff);
+  border-color: var(--primary-color, #7c4dff);
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(124, 77, 255, 0.4),
+    0 0 32px rgba(124, 77, 255, 0.2);
+}
+
+.secondary:active:not(.disabled) {
+  transform: scale(1.02);
 }
 
 .secondary:focus-visible {
-  outline: 3px solid rgba(124, 77, 255, 0.08);
+  outline: 3px solid rgba(124, 77, 255, 0.5);
   outline-offset: 3px;
 }
 
@@ -84,4 +89,9 @@
 .large {
   padding: 14px 28px;
   font-size: 16px;
+}
+
+.extraLarge {
+  padding: 22px 42px;
+  font-size: 24px;
 }

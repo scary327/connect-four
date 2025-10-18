@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Button.module.css";
 
 type Variant = "primary" | "secondary";
-type Size = "small" | "normal" | "large";
+type Size = "small" | "normal" | "large" | "extraLarge";
 
 interface BaseProps {
   children: React.ReactNode;
@@ -37,6 +37,8 @@ const sizeClass = (size: Size | undefined) => {
       return styles.small;
     case "large":
       return styles.large;
+    case "extraLarge":
+      return styles.extraLarge;
     default:
       return "";
   }
