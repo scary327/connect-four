@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
 import styles from "./NotFound.module.css";
-import buttonStyles from "../../shared/ui/Button/Button.module.css";
+import Button from "../../shared/ui/Button/Button";
 import { URLS } from "@app/router/urls";
 
 const NotFound = () => {
@@ -20,20 +19,13 @@ const NotFound = () => {
         </p>
 
         <div className={styles.actions}>
-          <Link
-            to={URLS.MENU}
-            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.primaryButton}`}
-          >
-            <span className={styles.buttonText}>На главную</span>
-            <span className={styles.buttonGlow}></span>
-          </Link>
+          <Button to={URLS.MENU} variant="primary">
+            На главную
+          </Button>
 
-          <Link
-            to={URLS.GAME}
-            className={`${buttonStyles.button} ${buttonStyles.secondary} ${styles.secondaryButton}`}
-          >
-            <span>Начать игру</span>
-          </Link>
+          <Button to={URLS.GAME} variant="secondary">
+            Начать игру
+          </Button>
         </div>
 
         <div className={styles.grid}></div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styles from "./Button.module.css";
 
 type Variant = "primary" | "secondary";
@@ -14,7 +15,6 @@ interface BaseProps {
   onClick?: (e: React.MouseEvent) => void;
 }
 
-// Props for rendering as a native button
 type ButtonAsButton = BaseProps &
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     href?: undefined;
@@ -22,14 +22,19 @@ type ButtonAsButton = BaseProps &
     as?: "button";
   };
 
-// Props for rendering as an anchor
 type ButtonAsAnchor = BaseProps &
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     href: string;
     as?: "a";
   };
 
-export type ButtonProps = ButtonAsButton | ButtonAsAnchor;
+type ButtonAsLink = BaseProps &
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+    to: string;
+    href?: undefined;
+  };
+
+export type ButtonProps = ButtonAsButton | ButtonAsAnchor | ButtonAsLink;
 
 const sizeClass = (size: Size | undefined) => {
   switch (size) {
@@ -66,7 +71,6 @@ const Button = React.forwardRef<HTMLElement, ButtonProps>((props, ref) => {
     .filter(Boolean)
     .join(" ");
 
-  // Render as anchor when href provided (type guard)
   const maybeAnchor = rest as Partial<ButtonAsAnchor>;
   if (typeof maybeAnchor.href === "string") {
     const { href, target, rel, ...anchorRest } = rest as ButtonAsAnchor;
@@ -86,7 +90,24 @@ const Button = React.forwardRef<HTMLElement, ButtonProps>((props, ref) => {
     );
   }
 
-  // Default: native button
+  // Render as react-router Link when `to` provided
+  const maybeLink = rest as Partial<ButtonAsLink>;
+  if (typeof maybeLink.to === "string") {
+    const { to, ...linkRest } = rest as ButtonAsLink;
+    return (
+      <Link
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        to={to}
+        className={classes}
+        aria-label={ariaLabel}
+        onClick={disabled ? (e) => e.preventDefault() : onClick}
+        {...(linkRest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
+        {children}
+      </Link>
+    );
+  }
+
   const buttonRest = rest as ButtonAsButton;
   return (
     <button

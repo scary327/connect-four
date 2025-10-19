@@ -1,24 +1,18 @@
-import { useRouteError, Link, isRouteErrorResponse } from "react-router-dom";
+import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 import styles from "./ErrorBoundary.module.css";
-import buttonStyles from "../../shared/ui/Button/Button.module.css";
 import Button from "../../shared/ui/Button/Button";
 import { URLS } from "@app/router/urls";
 
 const ErrorBoundary = () => {
   const error = useRouteError();
 
-  let errorMessage = "Что-то пошло не так";
-  let errorDetails = "Произошла неизвестная ошибка";
   let statusCode = "ERROR";
 
   if (isRouteErrorResponse(error)) {
     statusCode = error.status.toString();
-    errorMessage = error.statusText || "Ошибка сервера";
-    errorDetails = error.data?.message || "Попробуйте обновить страницу";
   } else if (error instanceof Error) {
-    errorMessage = error.message;
-    errorDetails =
-      error.stack?.split("\n")[0] || "Проверьте консоль для деталей";
+    // keep status as ERROR for client errors — we show a unified message
+    statusCode = "ERROR";
   }
 
   return (
@@ -30,8 +24,11 @@ const ErrorBoundary = () => {
           </div>
         </div>
 
-        <h1 className={styles.title}>{errorMessage}</h1>
-        <p className={styles.description}>{errorDetails}</p>
+        <h1 className={styles.title}>Что-то пошло не так</h1>
+        <p className={styles.description}>
+          Произошла ошибка. Пожалуйста, обновите страницу или вернитесь на
+          главную.
+        </p>
 
         <div className={styles.actions}>
           <Button
@@ -41,13 +38,9 @@ const ErrorBoundary = () => {
             Обновить страницу
           </Button>
 
-          <Link
-            to={URLS.MENU}
-            className={`${buttonStyles.button} ${buttonStyles.secondary} ${styles.link}`}
-          >
-            <span className={styles.linkText}>Вернуться на главную</span>
-            <span className={styles.linkArrow}>→</span>
-          </Link>
+          <Button to={URLS.MENU} variant="secondary">
+            Вернуться на главную →
+          </Button>
         </div>
 
         <div className={styles.decorCircle}></div>
