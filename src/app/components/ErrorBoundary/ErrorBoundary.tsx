@@ -1,6 +1,6 @@
 import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 import styles from "./ErrorBoundary.module.css";
-import Button from "../../shared/ui/Button/Button";
+import Button from "../../../shared/ui/Button/Button";
 import { URLS } from "@app/router/urls";
 
 const ErrorBoundary = () => {

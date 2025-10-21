@@ -4,6 +4,7 @@
   --cell-color: #2e2e2e;
   --border-radius: 12px;
   --primary-color: #7c4dff;
+  --layout-height: 71px;
 }
 
 body {
@@ -18,5 +19,5 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - 71px);
 }

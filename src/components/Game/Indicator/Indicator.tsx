@@ -8,6 +8,7 @@ interface IndicatorProps {
   y: number;
 }
 
+//TODO: поправить img
 const Indicator: React.FC<IndicatorProps> = memo(({ x, y }) => {
   return createPortal(
     <div className={styles.indicator} style={{ left: `${x}px`, top: `${y}px` }}>
