@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useRef, useCallback } from "react";
 
 interface IndicatorState {
   column: number;
@@ -7,17 +7,14 @@ interface IndicatorState {
 }
 
 export const useIndicator = (columns: number) => {
-  const [indicatorState, setIndicatorState] = useState<IndicatorState | null>(
-    null
-  );
   const boardRef = useRef<HTMLDivElement>(null);
+  const indicatorStateRef = useRef<IndicatorState | null>(null);
 
   const updateIndicator = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const board = boardRef.current;
-      if (!board) return;
+      if (!board) return null;
 
-      //рассчитываем позицию индикатора
       const boardRect = board.getBoundingClientRect();
       const styles = getComputedStyle(board);
       const padding = parseFloat(styles.paddingLeft || "0");
@@ -35,22 +32,25 @@ export const useIndicator = (columns: number) => {
         columnIndex * (columnWidth + gap) +
         columnWidth / 2;
 
-      setIndicatorState({
+      const newState = {
         column: columnIndex,
         x: centerX,
         y: boardRect.top,
-      });
+      };
+
+      indicatorStateRef.current = newState;
+      return newState;
     },
     [columns]
   );
 
   const hideIndicator = useCallback(() => {
-    setIndicatorState(null);
+    indicatorStateRef.current = null;
   }, []);
 
   return {
     boardRef,
-    indicatorState,
+    indicatorStateRef,
     updateIndicator,
     hideIndicator,
   };

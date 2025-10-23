@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import styles from "./GameBoard.module.css";
 import { useIndicator } from "@shared/hooks/useIndicator";
 import { useGame } from "@shared/hooks/useGame";
@@ -26,30 +26,42 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
     startAnimating,
   } = useGameBoard(rows);
 
-  const { boardRef, indicatorState, updateIndicator, hideIndicator } =
+  // Используем оптимизированный хук
+  const { boardRef, indicatorStateRef, updateIndicator, hideIndicator } =
     useIndicator(columns);
+
+  // Локальный стейт для отображения индикатора, чтобы триггерить ререндер при изменении позиции
+  const [localIndicator, setLocalIndicator] = useState(
+    indicatorStateRef.current
+  );
+
+  // Обертка над updateIndicator — обновляет ref и обновляет local state
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const newIndicatorState = updateIndicator(event);
+    setLocalIndicator(newIndicatorState);
+  };
+
+  // Обработчик скрытия индикатора - очищаем ref и local state
+  const handleMouseLeave = () => {
+    hideIndicator();
+    setLocalIndicator(null);
+  };
 
   const handleColumnClick = (columnIndex: number) => {
     if (game.isGameOver) return;
     if (fallingChip || animatingCells.size > 0) return;
 
-    // Находим свободную ячейку ДО того как сделаем ход
     const targetRow = findAvailableRow(game.board, columnIndex);
-    if (targetRow === -1) return; // Колонка заполнена
+    if (targetRow === -1) return;
 
     const currentPlayer = game.currentPlayer;
 
-    // Запускаем анимацию в зависимости от типа
     if (animationType === "fall") {
-      // Fall - фишка падает сверху
       startFalling(columnIndex, targetRow, currentPlayer);
-
-      // Делаем ход после задержки анимации
       setTimeout(() => {
         game.makeMove(columnIndex);
       }, 50 + targetRow * 100);
     } else {
-      // Drop - фишка появляется на месте с анимацией
       const moveSuccess = game.makeMove(columnIndex);
       if (moveSuccess) {
         startAnimating(targetRow, columnIndex);
@@ -57,7 +69,6 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
     }
   };
 
-  // Транспонируем доску для отображения по колонкам
   const columnData = Array.from({ length: columns }, (_, colIndex) =>
     Array.from(
       { length: rows },
@@ -84,8 +95,8 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
         <div
           ref={boardRef}
           className={styles.board}
-          onMouseMove={updateIndicator}
-          onMouseLeave={hideIndicator}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
         >
           {columnData.map((cells, colIndex) => (
             <Column
@@ -106,8 +117,8 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
             />
           ))}
         </div>
-        {indicatorState && !game.isGameOver && (
-          <Indicator x={indicatorState.x} y={indicatorState.y} />
+        {localIndicator && !game.isGameOver && (
+          <Indicator x={localIndicator.x} y={localIndicator.y} />
         )}
       </div>
     </>
