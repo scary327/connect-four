@@ -1,4 +1,3 @@
-import React from "react";
 import s from "./MenuBar.module.css";
 import Button from "@shared/ui/Button/Button";
 import { useNavigate } from "react-router-dom";

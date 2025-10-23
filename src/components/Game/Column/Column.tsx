@@ -1,22 +1,32 @@
 import React, { memo } from "react";
 import styles from "./Column.module.css";
-import FallingChip from "../FallingChip/FallingChip";
-import type { CellValue } from "@shared/hooks/useGameBoard";
 import Cell from "../Cell/Cell";
+import FallingChip from "../FallingChip/FallingChip";
+import type { CellValue, Player } from "src/types/game";
+
+interface FallingChipData {
+  targetRow: number;
+  player: Player;
+}
 
 interface ColumnProps {
   columnIndex: number;
   cells: CellValue[];
   animatingCells: Set<string>;
-  fallingToRow: number | null;
+  fallingChip: FallingChipData | null;
   onColumnClick: () => void;
 }
 
 const Column: React.FC<ColumnProps> = memo(
-  ({ columnIndex, cells, animatingCells, fallingToRow, onColumnClick }) => {
+  ({ columnIndex, cells, animatingCells, fallingChip, onColumnClick }) => {
     return (
       <div className={styles.column} onClick={onColumnClick}>
-        {fallingToRow !== null && <FallingChip targetRow={fallingToRow} />}
+        {fallingChip && (
+          <FallingChip
+            targetRow={fallingChip.targetRow}
+            player={fallingChip.player}
+          />
+        )}
         {cells.map((cell, rowIndex) => {
           const cellKey = `${rowIndex}-${columnIndex}`;
           const isAnimating = animatingCells.has(cellKey);
@@ -27,7 +37,7 @@ const Column: React.FC<ColumnProps> = memo(
               value={cell}
               isAnimating={isAnimating}
               onClick={(e) => {
-                e?.stopPropagation();
+                e.stopPropagation();
                 onColumnClick();
               }}
             />

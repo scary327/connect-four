@@ -1,8 +1,8 @@
 :root {
   --background-color: #121212;
   --board-background-color: #1e1e1e;
-  --cell-color: #2e2e2e;
   --border-radius: 12px;
+  --cell-color: #2e2e2e;
   --primary-color: #7c4dff;
   --layout-height: 71px;
 }

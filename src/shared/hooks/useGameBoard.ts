@@ -1,93 +1,73 @@
 import { useState, useCallback } from "react";
 import { useLocalStorage } from "./useLocalStorage";
+import type { Player } from "src/types/game";
 
-export type CellValue = null | "orange";
 export type AnimationType = "drop" | "fall";
 
 interface FallingChipState {
   columnIndex: number;
   targetRow: number;
+  player: Player;
 }
 
 interface UseGameBoardReturn {
-  board: CellValue[][];
   fallingChip: FallingChipState | null;
   animatingCells: Set<string>;
   animationType: AnimationType;
   setAnimationType: (type: AnimationType) => void;
-  handleColumnClick: (columnIndex: number) => void;
+  startFalling: (
+    columnIndex: number,
+    targetRow: number,
+    player: Player
+  ) => void;
+  startAnimating: (row: number, column: number) => void;
 }
 
-export const useGameBoard = (
-  rows: number,
-  columns: number
-): UseGameBoardReturn => {
-  const [board, setBoard] = useState<CellValue[][]>(
-    Array.from({ length: rows }, () => Array(columns).fill(null))
-  );
+export const useGameBoard = (rows: number): UseGameBoardReturn => {
+  console.log("useGameBoard rows:", rows);
   const [fallingChip, setFallingChip] = useState<FallingChipState | null>(null);
   const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
-
-  // Используем useLocalStorage для сохранения типа анимации
   const [animationType, setAnimationType] = useLocalStorage<AnimationType>(
     "connect4-animation-type",
     "fall"
   );
 
-  const handleColumnClick = useCallback(
-    (columnIndex: number) => {
-      // Проверяем, не падает ли уже фишка
-      if (fallingChip || animatingCells.size > 0) return;
+  /**
+   * Запускает анимацию падения сверху
+   */
+  const startFalling = useCallback(
+    (columnIndex: number, targetRow: number, player: Player) => {
+      setFallingChip({ columnIndex, targetRow, player });
 
-      // Находим первую свободную ячейку снизу вверх
-      for (let row = rows - 1; row >= 0; row--) {
-        if (board[row][columnIndex] === null) {
-          const cellKey = `${row}-${columnIndex}`;
-
-          if (animationType === "fall") {
-            // Анимация падения сверху
-            setFallingChip({ columnIndex, targetRow: row });
-
-            setTimeout(() => {
-              setBoard((prevBoard) => {
-                const newBoard = prevBoard.map((row) => [...row]);
-                newBoard[row][columnIndex] = "orange";
-                return newBoard;
-              });
-              setFallingChip(null);
-            }, 50 + row * 100);
-          } else {
-            // Анимация drop на месте
-            setAnimatingCells((prev) => new Set(prev).add(cellKey));
-
-            setBoard((prevBoard) => {
-              const newBoard = prevBoard.map((row) => [...row]);
-              newBoard[row][columnIndex] = "orange";
-              return newBoard;
-            });
-
-            setTimeout(() => {
-              setAnimatingCells((prev) => {
-                const newSet = new Set(prev);
-                newSet.delete(cellKey);
-                return newSet;
-              });
-            }, 500);
-          }
-
-          break;
-        }
-      }
+      setTimeout(() => {
+        setFallingChip(null);
+      }, 50 + targetRow * 100);
     },
-    [board, rows, fallingChip, animatingCells, animationType]
+    []
   );
 
+  /**
+   * Запускает анимацию появления на месте
+   */
+  const startAnimating = useCallback((row: number, column: number) => {
+    const cellKey = `${row}-${column}`;
+    setAnimatingCells((prev) => new Set(prev).add(cellKey));
+
+    setTimeout(() => {
+      setAnimatingCells((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(cellKey);
+        return newSet;
+      });
+    }, 500);
+  }, []);
+
   return {
-    board,
     fallingChip,
     animatingCells,
     animationType,
     setAnimationType,
-    handleColumnClick,
+    startFalling,
+    startAnimating,
   };
 };

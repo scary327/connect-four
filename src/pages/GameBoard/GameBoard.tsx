@@ -1,10 +1,13 @@
-import React, { memo, useMemo } from "react";
+import React, { memo } from "react";
 import styles from "./GameBoard.module.css";
 import { useIndicator } from "@shared/hooks/useIndicator";
+import { useGame } from "@shared/hooks/useGame";
 import { useGameBoard } from "@shared/hooks/useGameBoard";
-import GameSettings from "@components/Game/GameSettings/GameSettings";
 import Column from "@components/Game/Column/Column";
+import GameInfo from "@components/Game/GameInfo/GameInfo";
+import GameSettings from "@components/Game/GameSettings/GameSettings";
 import Indicator from "@components/Game/Indicator/Indicator";
+import { findAvailableRow } from "@shared/utils/gameHelpers";
 
 interface GameBoardProps {
   rows: number;
@@ -12,32 +15,71 @@ interface GameBoardProps {
 }
 
 const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
-  const { boardRef, indicatorState, updateIndicator, hideIndicator } =
-    useIndicator(columns);
+  const game = useGame({ rows, columns, mode: "local" });
 
   const {
-    board,
     fallingChip,
     animatingCells,
     animationType,
     setAnimationType,
-    handleColumnClick,
-  } = useGameBoard(rows, columns);
+    startFalling,
+    startAnimating,
+  } = useGameBoard(rows);
 
-  const columnData = useMemo(
-    () =>
-      Array.from({ length: columns }, (_, colIndex) =>
-        Array.from({ length: rows }, (_, rowIndex) => board[rowIndex][colIndex])
-      ),
-    [board, columns, rows]
+  const { boardRef, indicatorState, updateIndicator, hideIndicator } =
+    useIndicator(columns);
+
+  const handleColumnClick = (columnIndex: number) => {
+    if (game.isGameOver) return;
+    if (fallingChip || animatingCells.size > 0) return;
+
+    // Находим свободную ячейку ДО того как сделаем ход
+    const targetRow = findAvailableRow(game.board, columnIndex);
+    if (targetRow === -1) return; // Колонка заполнена
+
+    const currentPlayer = game.currentPlayer;
+
+    // Запускаем анимацию в зависимости от типа
+    if (animationType === "fall") {
+      // Fall - фишка падает сверху
+      startFalling(columnIndex, targetRow, currentPlayer);
+
+      // Делаем ход после задержки анимации
+      setTimeout(() => {
+        game.makeMove(columnIndex);
+      }, 50 + targetRow * 100);
+    } else {
+      // Drop - фишка появляется на месте с анимацией
+      const moveSuccess = game.makeMove(columnIndex);
+      if (moveSuccess) {
+        startAnimating(targetRow, columnIndex);
+      }
+    }
+  };
+
+  // Транспонируем доску для отображения по колонкам
+  const columnData = Array.from({ length: columns }, (_, colIndex) =>
+    Array.from(
+      { length: rows },
+      (_, rowIndex) => game.board[rowIndex][colIndex]
+    )
   );
 
   return (
     <>
+      <GameInfo
+        currentPlayer={game.currentPlayer}
+        winner={game.winner}
+        mode={game.mode}
+        onReset={game.resetGame}
+        onModeChange={game.setGameMode}
+      />
+
       <GameSettings
         animationType={animationType}
         onAnimationTypeChange={setAnimationType}
       />
+
       <div className={styles.boardContainer}>
         <div
           ref={boardRef}
@@ -51,17 +93,20 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
               columnIndex={colIndex}
               cells={cells}
               animatingCells={animatingCells}
-              fallingToRow={
+              fallingChip={
                 fallingChip?.columnIndex === colIndex &&
                 animationType === "fall"
-                  ? fallingChip.targetRow
+                  ? {
+                      targetRow: fallingChip.targetRow,
+                      player: fallingChip.player,
+                    }
                   : null
               }
               onColumnClick={() => handleColumnClick(colIndex)}
             />
           ))}
         </div>
-        {indicatorState && (
+        {indicatorState && !game.isGameOver && (
           <Indicator x={indicatorState.x} y={indicatorState.y} />
         )}
       </div>
