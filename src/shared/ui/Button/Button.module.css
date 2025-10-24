@@ -22,7 +22,7 @@
 }
 
 .primary {
-  color: #f8f8ff;
+  color: var(--text-color);
   background-color: var(--board-background-color);
   border-color: rgba(255, 255, 255, 0.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -51,7 +51,7 @@
 }
 
 .secondary:hover:not(.disabled) {
-  color: #f8f8ff;
+  color: var(--text-color);
   background-color: var(--primary-color, #7c4dff);
   border-color: var(--primary-color, #7c4dff);
   transform: scale(1.05);

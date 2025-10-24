@@ -3,14 +3,28 @@
   --board-background-color: #1e1e1e;
   --border-radius: 12px;
   --cell-color: #2e2e2e;
+  --cell-hover-color: #3a3a3a;
   --primary-color: #7c4dff;
   --layout-height: 71px;
+  --text-color: #ffffff;
+  --text-muted: #c9c9c9;
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] {
+  --background-color: #f5f7fb;
+  --board-background-color: #ffffff;
+  --cell-color: #e9eef9;
+  --cell-hover-color: #d9e4fb;
+  --text-color: #1b1f2b;
+  --text-muted: #5b6470;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 body {
   margin: 0;
   background-color: var(--background-color);
-  color: white;
+  color: var(--text-color);
   font-family: Arial, sans-serif;
 }
 

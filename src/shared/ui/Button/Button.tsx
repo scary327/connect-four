@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Button.module.css";
+import Typography from "@shared/ui/Typography/Typography";
 
 type Variant = "primary" | "secondary";
 type Size = "small" | "normal" | "large" | "extraLarge";
@@ -119,7 +120,7 @@ const Button = React.forwardRef<HTMLElement, ButtonProps>((props, ref) => {
       type={buttonRest.type || "button"}
       {...buttonRest}
     >
-      {children}
+      <Typography.ButtonText>{children}</Typography.ButtonText>
     </button>
   );
 });

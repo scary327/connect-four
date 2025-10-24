@@ -12,9 +12,9 @@
 }
 
 .status h2 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-color);
   margin: 0;
 }
 
@@ -23,7 +23,15 @@
 }
 
 .draw {
-  color: #b0b0b0;
+  color: var(--text-muted);
+}
+
+.playerName {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  margin-left: 6px;
+  display: inline-block;
 }
 
 @keyframes celebrate {

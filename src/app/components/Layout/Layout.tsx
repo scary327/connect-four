@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Outlet } from "react-router-dom";
 import styles from "./Layout.module.css";
 import { URLS } from "@app/router/urls";
 import Button from "@shared/ui/Button/Button";
+import Typography from "@shared/ui/Typography/Typography";
 
 const pageTitles: Record<keyof typeof URLS, string> = {
   MENU: "Главная",
@@ -49,7 +50,7 @@ const Layout: React.FC = () => {
           </svg>
           Menu
         </Button>
-        <h1 className={styles.pageTitle}>{pageTitle}</h1>
+        <Typography.H2 className={styles.pageTitle}>{pageTitle}</Typography.H2>
         <div className={styles.spacer} />
       </header>
       <main className={styles.main}>

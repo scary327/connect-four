@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import styles from "./GameInfo.module.css";
+import Typography from "@shared/ui/Typography/Typography";
 import type { Player, GameMode } from "src/types/game";
 import { getPlayerColor, getPlayerName } from "@shared/utils/gameHelpers";
 
@@ -20,28 +21,34 @@ const GameInfo: React.FC<GameInfoProps> = memo(
       <div className={styles.gameInfo}>
         <div className={styles.status}>
           {winner === "draw" ? (
-            <h2 className={styles.draw}>Ничья!</h2>
+            <Typography.H2 className={styles.draw}>Ничья!</Typography.H2>
           ) : winner ? (
-            <h2 className={styles.winner}>
+            <Typography.H2 className={styles.winner}>
               Победил{" "}
-              <span style={{ color: getPlayerColor(winner) }}>
+              <Typography.Label
+                className={styles.playerName}
+                style={{ color: getPlayerColor(winner) }}
+              >
                 {getPlayerName(winner, mode)}
-              </span>
+              </Typography.Label>
               !
-            </h2>
+            </Typography.H2>
           ) : (
-            <h2>
+            <Typography.H2>
               Ход:{" "}
-              <span style={{ color: currentPlayerColor }}>
+              <Typography.Label
+                className={styles.playerName}
+                style={{ color: currentPlayerColor }}
+              >
                 {currentPlayerName}
-              </span>
-            </h2>
+              </Typography.Label>
+            </Typography.H2>
           )}
         </div>
 
         <div className={styles.controls}>
           <button className={styles.resetButton} onClick={onReset}>
-            Новая игра
+            <Typography.ButtonText>Новая игра</Typography.ButtonText>
           </button>
 
           <div className={styles.modeSwitch}>
@@ -51,7 +58,7 @@ const GameInfo: React.FC<GameInfoProps> = memo(
               }`}
               onClick={() => onModeChange("local")}
             >
-              2 игрока
+              <Typography.ButtonText>2 игрока</Typography.ButtonText>
             </button>
             <button
               className={`${styles.modeButton} ${
@@ -61,7 +68,7 @@ const GameInfo: React.FC<GameInfoProps> = memo(
               disabled
               title="Скоро..."
             >
-              Против бота
+              <Typography.ButtonText>Против бота</Typography.ButtonText>
             </button>
           </div>
         </div>

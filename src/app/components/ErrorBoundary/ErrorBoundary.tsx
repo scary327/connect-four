@@ -2,6 +2,7 @@ import { useRouteError, isRouteErrorResponse } from "react-router-dom";
 import styles from "./ErrorBoundary.module.css";
 import Button from "../../../shared/ui/Button/Button";
 import { URLS } from "@app/router/urls";
+import Typography from "@shared/ui/Typography/Typography";
 
 const ErrorBoundary = () => {
   const error = useRouteError();
@@ -24,11 +25,13 @@ const ErrorBoundary = () => {
           </div>
         </div>
 
-        <h1 className={styles.title}>Что-то пошло не так</h1>
-        <p className={styles.description}>
+        <Typography.H1 className={styles.title}>
+          Что-то пошло не так
+        </Typography.H1>
+        <Typography.Body className={styles.description}>
           Произошла ошибка. Пожалуйста, обновите страницу или вернитесь на
           главную.
-        </p>
+        </Typography.Body>
 
         <div className={styles.actions}>
           <Button

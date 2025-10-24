@@ -1,0 +1,51 @@
+.root {
+  color: var(--text-color);
+  font-family: inherit;
+}
+
+.h1 {
+  font-size: 32px;
+  line-height: 1.1;
+  /* margin: 0 0 16px 0; */
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.h2 {
+  font-size: 20px;
+  /* margin: 0 0 12px 0; */
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.body {
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.buttonText {
+  font: inherit;
+  color: inherit;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

@@ -1,6 +1,7 @@
 import s from "./MenuBar.module.css";
 import Button from "@shared/ui/Button/Button";
 import { useNavigate } from "react-router-dom";
+import Typography from "@shared/ui/Typography/Typography";
 
 const MENU_ITEMS = [
   { label: "PLAY", link: "/game" },
@@ -13,7 +14,7 @@ const MenuBar = () => {
 
   return (
     <div className="centered">
-      <h1>Menu</h1>
+      <Typography.H1>Menu</Typography.H1>
       <ul className={s.menuList}>
         {MENU_ITEMS.map((item) => (
           <Button

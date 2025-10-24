@@ -1,7 +1,7 @@
 .layout {
   min-height: 100vh;
   background-color: var(--background-color);
-  color: #f8f8ff;
+  color: var(--text-color);
 }
 
 .header {
@@ -38,7 +38,7 @@
 .pageTitle {
   font-size: 18px;
   font-weight: 600;
-  color: #f8f8ff;
+  color: var(--text-color);
   margin: 0;
   text-align: center;
   white-space: nowrap;

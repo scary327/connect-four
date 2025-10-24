@@ -1,6 +1,7 @@
 import styles from "./NotFound.module.css";
 import Button from "../../../shared/ui/Button/Button";
 import { URLS } from "@app/router/urls";
+import Typography from "@shared/ui/Typography/Typography";
 
 const NotFound = () => {
   return (
@@ -12,11 +13,13 @@ const NotFound = () => {
           <span className={styles.digit}>4</span>
         </div>
 
-        <h1 className={styles.title}>Страница не найдена</h1>
-        <p className={styles.description}>
+        <Typography.H1 className={styles.title}>
+          Страница не найдена
+        </Typography.H1>
+        <Typography.Body className={styles.description}>
           Кажется, вы попали в цифровую пустоту. Страница, которую вы ищете, не
           существует или была перемещена.
-        </p>
+        </Typography.Body>
 
         <div className={styles.actions}>
           <Button to={URLS.MENU} variant="primary">
