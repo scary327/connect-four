@@ -1,6 +1,8 @@
 import React, { memo } from "react";
-import styles from "./GameSettings.module.css";
+// styles replaced by SettingSection visuals; keep module file for backward-compat if needed
+import "./GameSettings.module.css";
 import Toggle from "@shared/ui/Toggle/Toggle";
+import SettingSection from "@shared/ui/SettingSection/SettingSection";
 import type { AnimationType } from "@shared/hooks/useGameBoard";
 
 interface GameSettingsProps {
@@ -15,7 +17,10 @@ const GameSettings: React.FC<GameSettingsProps> = memo(
     };
 
     return (
-      <div className={styles.settings}>
+      <SettingSection
+        title="Animation"
+        description="Choose how new chips appear on the board."
+      >
         <Toggle
           isOn={animationType === "fall"}
           onToggle={handleToggle}
@@ -23,7 +28,7 @@ const GameSettings: React.FC<GameSettingsProps> = memo(
           leftLabel="Drop"
           rightLabel="Fall"
         />
-      </div>
+      </SettingSection>
     );
   }
 );

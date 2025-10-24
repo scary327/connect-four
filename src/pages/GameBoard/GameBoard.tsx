@@ -5,7 +5,6 @@ import { useGame } from "@shared/hooks/useGame";
 import { useGameBoard } from "@shared/hooks/useGameBoard";
 import Column from "@components/Game/Column/Column";
 import GameInfo from "@components/Game/GameInfo/GameInfo";
-import GameSettings from "@components/Game/GameSettings/GameSettings";
 import Indicator from "@components/Game/Indicator/Indicator";
 import { findAvailableRow } from "@shared/utils/gameHelpers";
 
@@ -21,7 +20,6 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
     fallingChip,
     animatingCells,
     animationType,
-    setAnimationType,
     startFalling,
     startAnimating,
   } = useGameBoard(rows);
@@ -85,12 +83,6 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
         onReset={game.resetGame}
         onModeChange={game.setGameMode}
       />
-
-      <GameSettings
-        animationType={animationType}
-        onAnimationTypeChange={setAnimationType}
-      />
-
       <div className={styles.boardContainer}>
         <div
           ref={boardRef}
