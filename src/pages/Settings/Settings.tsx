@@ -2,7 +2,6 @@ import React from "react";
 import Toggle from "@shared/ui/Toggle/Toggle";
 import { useTheme } from "@shared/context/useTheme";
 import Typography from "@shared/ui/Typography/Typography";
-import GameSettings from "@components/Game/GameSettings/GameSettings";
 import SettingSection from "@shared/ui/SettingSection/SettingSection";
 import { useLocalStorage } from "@shared/hooks/useLocalStorage";
 import type { AnimationType } from "@shared/hooks/useGameBoard";
@@ -13,6 +12,10 @@ const Settings: React.FC = () => {
     "connect4-animation-type",
     "fall"
   );
+
+  const handleToggle = () => {
+    setAnimationType(animationType === "fall" ? "drop" : "fall");
+  };
 
   return (
     <div className="centered">
@@ -31,10 +34,18 @@ const Settings: React.FC = () => {
           label="Theme"
         />
       </SettingSection>
-      <GameSettings
-        animationType={animationType}
-        onAnimationTypeChange={setAnimationType}
-      />
+      <SettingSection
+        title="Animation"
+        description="Choose how new chips appear on the board."
+      >
+        <Toggle
+          isOn={animationType === "fall"}
+          onToggle={handleToggle}
+          label="Animation Type"
+          leftLabel="Drop"
+          rightLabel="Fall"
+        />
+      </SettingSection>
     </div>
   );
 };

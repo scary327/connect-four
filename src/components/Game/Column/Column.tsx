@@ -1,8 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useRef, useEffect, useState, useCallback } from "react";
 import styles from "./Column.module.css";
 import Cell from "../Cell/Cell";
 import FallingChip from "../FallingChip/FallingChip";
 import type { CellValue, Player } from "src/types/game";
+import Indicator from "../Indicator/Indicator";
 
 interface FallingChipData {
   targetRow: number;
@@ -15,12 +16,41 @@ interface ColumnProps {
   animatingCells: Set<string>;
   fallingChip: FallingChipData | null;
   onColumnClick: () => void;
+  showIndicator?: boolean;
 }
 
 const Column: React.FC<ColumnProps> = memo(
-  ({ columnIndex, cells, animatingCells, fallingChip, onColumnClick }) => {
+  ({
+    columnIndex,
+    cells,
+    animatingCells,
+    fallingChip,
+    onColumnClick,
+    showIndicator = true,
+  }) => {
+    const colRef = useRef<HTMLDivElement | null>(null);
+    const posRef = useRef<{ x: number; y: number } | null>(null);
+
+    const handleMouseMove = useCallback(() => {
+      const rect = colRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const centerX = rect.left + rect.width / 2;
+      const topY = rect.top;
+      posRef.current = { x: centerX, y: topY };
+    }, []);
+
+    const handleMouseLeave = useCallback(() => {
+      posRef.current = null;
+    }, []);
+
     return (
-      <div className={styles.column} onClick={onColumnClick}>
+      <div
+        className={styles.column}
+        onClick={onColumnClick}
+        ref={colRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
         {fallingChip && (
           <FallingChip
             targetRow={fallingChip.targetRow}
@@ -43,10 +73,53 @@ const Column: React.FC<ColumnProps> = memo(
             />
           );
         })}
+
+        {showIndicator && <ColumnIndicator posRef={posRef} />}
       </div>
     );
   }
 );
+
+// Small internal component that reads the posRef and updates itself via RAF.
+// This keeps indicator updates local to this child and prevents Column from
+// rerendering on every pointer movement.
+const ColumnIndicator: React.FC<{
+  posRef: React.RefObject<{ x: number; y: number } | null>;
+}> = memo(({ posRef }) => {
+  const [posLocal, setPosLocal] = useState<{ x: number; y: number } | null>(
+    posRef.current
+  );
+  const prevRef = useRef<{ x: number; y: number } | null>(posLocal);
+  const rafRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    function loop() {
+      const s = posRef.current;
+      if (s) {
+        const changed =
+          !prevRef.current ||
+          prevRef.current.x !== s.x ||
+          prevRef.current.y !== s.y;
+        if (changed) {
+          prevRef.current = { x: s.x, y: s.y };
+          setPosLocal({ x: s.x, y: s.y });
+        }
+      } else if (prevRef.current !== null) {
+        prevRef.current = null;
+        setPosLocal(null);
+      }
+      rafRef.current = requestAnimationFrame(loop);
+    }
+
+    rafRef.current = requestAnimationFrame(loop);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [posRef]);
+
+  if (!posLocal) return null;
+  return <Indicator x={posLocal.x} y={posLocal.y} />;
+});
 
 Column.displayName = "Column";
 

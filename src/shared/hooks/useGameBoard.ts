@@ -23,8 +23,7 @@ interface UseGameBoardReturn {
   startAnimating: (row: number, column: number) => void;
 }
 
-export const useGameBoard = (rows: number): UseGameBoardReturn => {
-  console.log("useGameBoard rows:", rows);
+export const useGameBoard = (_rows: number): UseGameBoardReturn => {
   const [fallingChip, setFallingChip] = useState<FallingChipState | null>(null);
   const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
   const [animationType, setAnimationType] = useLocalStorage<AnimationType>(

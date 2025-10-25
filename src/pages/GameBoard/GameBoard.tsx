@@ -1,11 +1,9 @@
-import React, { memo, useState } from "react";
+import React, { memo } from "react";
 import styles from "./GameBoard.module.css";
-import { useIndicator } from "@shared/hooks/useIndicator";
 import { useGame } from "@shared/hooks/useGame";
 import { useGameBoard } from "@shared/hooks/useGameBoard";
 import Column from "@components/Game/Column/Column";
 import GameInfo from "@components/Game/GameInfo/GameInfo";
-import Indicator from "@components/Game/Indicator/Indicator";
 import { findAvailableRow } from "@shared/utils/gameHelpers";
 
 interface GameBoardProps {
@@ -23,27 +21,6 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
     startFalling,
     startAnimating,
   } = useGameBoard(rows);
-
-  // Используем оптимизированный хук
-  const { boardRef, indicatorStateRef, updateIndicator, hideIndicator } =
-    useIndicator(columns);
-
-  // Локальный стейт для отображения индикатора, чтобы триггерить ререндер при изменении позиции
-  const [localIndicator, setLocalIndicator] = useState(
-    indicatorStateRef.current
-  );
-
-  // Обертка над updateIndicator — обновляет ref и обновляет local state
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const newIndicatorState = updateIndicator(event);
-    setLocalIndicator(newIndicatorState);
-  };
-
-  // Обработчик скрытия индикатора - очищаем ref и local state
-  const handleMouseLeave = () => {
-    hideIndicator();
-    setLocalIndicator(null);
-  };
 
   const handleColumnClick = (columnIndex: number) => {
     if (game.isGameOver) return;
@@ -84,12 +61,7 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
         onModeChange={game.setGameMode}
       />
       <div className={styles.boardContainer}>
-        <div
-          ref={boardRef}
-          className={styles.board}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-        >
+        <div className={styles.board}>
           {columnData.map((cells, colIndex) => (
             <Column
               key={colIndex}
@@ -106,12 +78,10 @@ const GameBoard: React.FC<GameBoardProps> = memo(({ rows, columns }) => {
                   : null
               }
               onColumnClick={() => handleColumnClick(colIndex)}
+              showIndicator={!game.isGameOver}
             />
           ))}
         </div>
-        {localIndicator && !game.isGameOver && (
-          <Indicator x={localIndicator.x} y={localIndicator.y} />
-        )}
       </div>
     </>
   );
