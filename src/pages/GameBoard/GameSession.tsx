@@ -1,6 +1,5 @@
 import React from "react";
 import { useLocation, Navigate } from "react-router-dom";
-import Typography from "@shared/ui/Typography/Typography";
 import type { GameMode } from "src/types/game";
 import GameBoard from "./GameBoard";
 
@@ -24,7 +23,6 @@ const GameSession: React.FC = () => {
 
   return (
     <div className="centered">
-      <Typography.H1>Connect Four</Typography.H1>
       <GameBoard
         rows={rows}
         columns={columns}

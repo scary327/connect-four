@@ -1,15 +1,16 @@
 import React, { memo } from "react";
-import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { useLocation, useNavigate, Outlet, matchPath } from "react-router-dom";
 import styles from "./Layout.module.css";
 import { URLS } from "@app/router/urls";
 import Button from "@shared/ui/Button/Button";
 import Typography from "@shared/ui/Typography/Typography";
 
 const pageTitles: Record<keyof typeof URLS, string> = {
-  MENU: "Главная",
-  GAME: "Игра",
-  HISTORY: "История",
-  SETTINGS: "Настройки",
+  MENU: "MENU",
+  GAME: "GAME",
+  HISTORY: "HISTORY",
+  SETTINGS: "SETTINGS",
+  GAME_SESSION: "GAME SESSION",
 };
 
 const Header: React.FC<{
@@ -49,16 +50,15 @@ const Layout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const routeKey = (Object.keys(URLS) as Array<keyof typeof URLS>).find(
-    (key) => URLS[key] === location.pathname
+  const routeKey = (Object.keys(URLS) as Array<keyof typeof URLS>).find((key) =>
+    Boolean(matchPath(URLS[key], location.pathname))
   ) as keyof typeof URLS | undefined;
 
   const isHomePage = location.pathname === URLS.MENU;
-  const pageTitle = routeKey ? pageTitles[routeKey] : "Страница";
+  const pageTitle = routeKey ? pageTitles[routeKey] : pageTitles.MENU;
 
   const handleBack = () => navigate(-1);
 
-  // keep Layout as a thin wrapper; heavy header/UI is memoized in Header
   return (
     <div className={styles.layout}>
       <Header isHome={isHomePage} title={pageTitle} onBack={handleBack} />

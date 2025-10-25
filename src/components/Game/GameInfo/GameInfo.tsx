@@ -13,7 +13,7 @@ interface GameInfoProps {
 }
 
 const GameInfo: React.FC<GameInfoProps> = memo(
-  ({ currentPlayer, winner, mode, onReset, onModeChange }) => {
+  ({ currentPlayer, mode, winner }) => {
     const currentPlayerName = getPlayerName(currentPlayer, mode);
     const currentPlayerColor = getPlayerColor(currentPlayer);
 
@@ -44,33 +44,6 @@ const GameInfo: React.FC<GameInfoProps> = memo(
               </Typography.Label>
             </Typography.H2>
           )}
-        </div>
-
-        <div className={styles.controls}>
-          <button className={styles.resetButton} onClick={onReset}>
-            <Typography.ButtonText>Новая игра</Typography.ButtonText>
-          </button>
-
-          <div className={styles.modeSwitch}>
-            <button
-              className={`${styles.modeButton} ${
-                mode === "local" ? styles.active : ""
-              }`}
-              onClick={() => onModeChange("local")}
-            >
-              <Typography.ButtonText>2 игрока</Typography.ButtonText>
-            </button>
-            <button
-              className={`${styles.modeButton} ${
-                mode === "bot" ? styles.active : ""
-              }`}
-              onClick={() => onModeChange("bot")}
-              disabled
-              title="Скоро..."
-            >
-              <Typography.ButtonText>Против бота</Typography.ButtonText>
-            </button>
-          </div>
         </div>
       </div>
     );
