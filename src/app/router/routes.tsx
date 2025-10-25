@@ -3,11 +3,11 @@ import { URLS } from "./urls";
 import { lazy } from "react";
 import NotFound from "@app/components/NotFound/NotFound";
 import { Loader } from "@shared/ui/Loader/Loader";
-import Typography from "@shared/ui/Typography/Typography";
 
-const GameBoard = lazy(() => import("../../pages/GameBoard/GameBoard"));
 const MenuBar = lazy(() => import("../../pages/MenuBar/MenuBar"));
 const Settings = lazy(() => import("../../pages/Settings/Settings"));
+const GameSession = lazy(() => import("../../pages/GameBoard/GameSession"));
+const CreateGame = lazy(() => import("../../pages/CreateGame/CreateGame"));
 
 export const PublicRoutes: RouteObject[] = [
   {
@@ -16,12 +16,11 @@ export const PublicRoutes: RouteObject[] = [
   },
   {
     path: URLS.GAME,
-    element: (
-      <div className="centered">
-        <Typography.H1>Connect Four</Typography.H1>
-        <GameBoard rows={6} columns={7} />
-      </div>
-    ),
+    element: <CreateGame />,
+  },
+  {
+    path: URLS.GAME_SESSION,
+    element: <GameSession />,
   },
   {
     path: URLS.HISTORY,

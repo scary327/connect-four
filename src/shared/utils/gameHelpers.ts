@@ -1,20 +1,45 @@
-import type { Player, GameMode, CellValue } from "src/types/game";
+// src/shared/utils/gameHelpers.ts
 
-/**
- * Генерирует уникальный ID игры
- */
+import type { Player } from "src/types/game";
+
 export const generateGameId = (): string => {
-  return `game_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  return `game-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
+export const findAvailableRow = (
+  board: (Player | null)[][],
+  column: number
+): number => {
+  for (let row = board.length - 1; row >= 0; row--) {
+    if (board[row][column] === null) {
+      return row;
+    }
+  }
+  return -1;
+};
+
+export const switchPlayer = (player: Player): Player => {
+  return player === "player1" ? "player2" : "player1";
+};
+
+export const isBoardFull = (board: (Player | null)[][]): boolean => {
+  return board[0].every((cell) => cell !== null);
 };
 
 /**
- * Проверяет победу по вертикали, горизонтали и диагоналям
+ * Проверяет победу игрока в указанной позиции
+ * @param board - игровая доска
+ * @param row - строка последнего хода
+ * @param col - колонка последнего хода
+ * @param player - игрок
+ * @param winCondition - количество фишек для победы (по умолчанию 4)
  */
 export const checkWinner = (
-  board: CellValue[][],
-  lastRow: number,
-  lastCol: number,
-  player: Player
+  board: (Player | null)[][],
+  row: number,
+  col: number,
+  player: Player,
+  winCondition: number = 4
 ): boolean => {
   const rows = board.length;
   const cols = board[0].length;
@@ -23,9 +48,9 @@ export const checkWinner = (
   const checkHorizontal = (): boolean => {
     let count = 0;
     for (let c = 0; c < cols; c++) {
-      if (board[lastRow][c] === player) {
+      if (board[row][c] === player) {
         count++;
-        if (count === 4) return true;
+        if (count >= winCondition) return true;
       } else {
         count = 0;
       }
@@ -37,9 +62,9 @@ export const checkWinner = (
   const checkVertical = (): boolean => {
     let count = 0;
     for (let r = 0; r < rows; r++) {
-      if (board[r][lastCol] === player) {
+      if (board[r][col] === player) {
         count++;
-        if (count === 4) return true;
+        if (count >= winCondition) return true;
       } else {
         count = 0;
       }
@@ -47,99 +72,56 @@ export const checkWinner = (
     return false;
   };
 
-  // Проверка по диагонали (слева-направо вниз)
-  const checkDiagonalRight = (): boolean => {
+  // Проверка по диагонали (слева-снизу -> справа-сверху)
+  const checkDiagonal1 = (): boolean => {
     let count = 0;
-    const startRow = lastRow - Math.min(lastRow, lastCol);
-    const startCol = lastCol - Math.min(lastRow, lastCol);
+    const startRow = row - Math.min(row, col);
+    const startCol = col - Math.min(row, col);
 
-    let r = startRow;
-    let c = startCol;
-
-    while (r < rows && c < cols) {
+    for (let r = startRow, c = startCol; r < rows && c < cols; r++, c++) {
       if (board[r][c] === player) {
         count++;
-        if (count === 4) return true;
+        if (count >= winCondition) return true;
       } else {
         count = 0;
       }
-      r++;
-      c++;
     }
     return false;
   };
 
-  // Проверка по диагонали (справа-налево вниз)
-  const checkDiagonalLeft = (): boolean => {
+  // Проверка по диагонали (слева-сверху -> справа-снизу)
+  const checkDiagonal2 = (): boolean => {
     let count = 0;
-    const startRow = lastRow - Math.min(lastRow, cols - 1 - lastCol);
-    const startCol = lastCol + Math.min(lastRow, cols - 1 - lastCol);
+    const offset = Math.min(row, cols - 1 - col);
+    const startRow = row - offset;
+    const startCol = col + offset;
 
-    let r = startRow;
-    let c = startCol;
-
-    while (r < rows && c >= 0) {
+    for (let r = startRow, c = startCol; r < rows && c >= 0; r++, c--) {
       if (board[r][c] === player) {
         count++;
-        if (count === 4) return true;
+        if (count >= winCondition) return true;
       } else {
         count = 0;
       }
-      r++;
-      c--;
     }
     return false;
   };
 
   return (
-    checkHorizontal() ||
-    checkVertical() ||
-    checkDiagonalRight() ||
-    checkDiagonalLeft()
+    checkHorizontal() || checkVertical() || checkDiagonal1() || checkDiagonal2()
   );
 };
 
-/**
- * Проверяет, заполнена ли доска (ничья)
- */
-export const isBoardFull = (board: CellValue[][]): boolean => {
-  return board[0].every((cell) => cell !== null);
-};
-
-/**
- * Находит первую свободную строку в колонке (снизу вверх)
- */
-export const findAvailableRow = (
-  board: CellValue[][],
-  column: number
-): number => {
-  const rows = board.length;
-  for (let row = rows - 1; row >= 0; row--) {
-    if (board[row][column] === null) {
-      return row;
-    }
-  }
-  return -1; // Колонка заполнена
-};
-
-/**
- * Переключает игрока
- */
-export const switchPlayer = (currentPlayer: Player): Player => {
-  return currentPlayer === "player1" ? "player2" : "player1";
-};
-
-/**
- * Получает цвет для игрока
- */
 export const getPlayerColor = (player: Player): string => {
-  return player === "player1" ? "#ff8c42" : "#00D9FF";
+  return player === "player1" ? "#ff4757" : "#ffa502";
 };
 
-/**
- * Получает имя игрока
- */
-export const getPlayerName = (player: Player, mode: GameMode): string => {
-  if (player === "player1") return "Игрок 1";
-  return mode === "bot" ? "Бот" : "Игрок 2";
+export const getPlayerName = (
+  player: Player,
+  mode: "local" | "bot"
+): string => {
+  if (mode === "bot") {
+    return player === "player1" ? "Вы" : "Бот";
+  }
+  return player === "player1" ? "Игрок 1" : "Игрок 2";
 };

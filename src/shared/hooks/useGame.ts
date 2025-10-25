@@ -16,7 +16,7 @@ interface UseGameReturn extends GameState {
 }
 
 export const useGame = (config: GameConfig): UseGameReturn => {
-  const { rows, columns } = config;
+  const { rows, columns, winCondition } = config;
 
   const [gameMode, setGameMode] = useLocalStorage<GameMode>(
     "connect4-game-mode",
@@ -55,12 +55,13 @@ export const useGame = (config: GameConfig): UseGameReturn => {
       const newBoard = gameState.board.map((row) => [...row]);
       newBoard[availableRow][column] = gameState.currentPlayer;
 
-      // Проверяем победу
+      // Проверяем победу с учетом winCondition
       const hasWon = checkWinner(
         newBoard,
         availableRow,
         column,
-        gameState.currentPlayer
+        gameState.currentPlayer,
+        winCondition
       );
 
       // Проверяем ничью
@@ -81,7 +82,7 @@ export const useGame = (config: GameConfig): UseGameReturn => {
 
       return true;
     },
-    [gameState, columns]
+    [gameState, columns, winCondition]
   );
 
   /**
