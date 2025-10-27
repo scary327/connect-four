@@ -17,7 +17,16 @@ export interface GameState {
   currentPlayer: Player;
   moves: number[];
   winner: Player | "draw" | null;
-  // winningLine holds the coordinates [row, col] of the winning sequence when a player wins
   winningLine?: Array<[number, number]>;
   isGameOver: boolean;
+}
+
+export interface GameResults {
+  player_1: [number, number][];
+  player_2: [number, number][];
+  board_state: "win" | "draw" | "ongoing";
+  winner: {
+    who: "player_1" | "player_2" | null;
+    positions: [number, number][]; // winning positions
+  };
 }
