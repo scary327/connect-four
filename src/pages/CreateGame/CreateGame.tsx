@@ -13,10 +13,10 @@ const CreateGame: React.FC = () => {
   const [winCondition, setWinCondition] = useState(4);
 
   const handleStartGame = () => {
-    // Генерируем ID игры (можно использовать uuid или timestamp)
+    // Generate a game ID (could use uuid or timestamp)
     const gameId = Date.now().toString();
 
-    // Передаем параметры через state
+    // Pass parameters via state
     navigate(`/game/${gameId}`, {
       state: {
         mode,
@@ -29,13 +29,13 @@ const CreateGame: React.FC = () => {
 
   return (
     <div className="centered">
-      <Typography.H1>Создать игру</Typography.H1>
+      <Typography.H1>Create Game</Typography.H1>
 
       <div className={styles.createGame}>
-        {/* Режим игры */}
+        {/* Game mode */}
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
-            Режим игры
+            Game mode
           </Typography.H2>
           <div className={styles.modeSwitch}>
             <button
@@ -44,7 +44,7 @@ const CreateGame: React.FC = () => {
               }`}
               onClick={() => setMode("local")}
             >
-              <Typography.ButtonText>2 игрока</Typography.ButtonText>
+              <Typography.ButtonText>2 Players</Typography.ButtonText>
             </button>
             <button
               className={`${styles.modeButton} ${
@@ -54,19 +54,19 @@ const CreateGame: React.FC = () => {
               disabled
               title="Скоро..."
             >
-              <Typography.ButtonText>Против бота</Typography.ButtonText>
+              <Typography.ButtonText>Vs Bot</Typography.ButtonText>
             </button>
           </div>
         </div>
 
-        {/* Размер доски */}
+        {/* Board size */}
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
-            Размер доски
+            Board size
           </Typography.H2>
           <div className={styles.inputGroup}>
             <div className={styles.inputField}>
-              <Typography.Label>Строк:</Typography.Label>
+              <Typography.Label>Rows:</Typography.Label>
               <input
                 type="number"
                 min={4}
@@ -77,7 +77,7 @@ const CreateGame: React.FC = () => {
               />
             </div>
             <div className={styles.inputField}>
-              <Typography.Label>Столбцов:</Typography.Label>
+              <Typography.Label>Columns:</Typography.Label>
               <input
                 type="number"
                 min={4}
@@ -90,10 +90,10 @@ const CreateGame: React.FC = () => {
           </div>
         </div>
 
-        {/* Условие победы */}
+        {/* Win condition */}
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
-            Фишек для победы
+            Pieces to win
           </Typography.H2>
           <div className={styles.inputField}>
             <input
@@ -107,9 +107,9 @@ const CreateGame: React.FC = () => {
           </div>
         </div>
 
-        {/* Кнопка старта */}
+        {/* Start button */}
         <Button onClick={handleStartGame} variant="primary">
-          Начать играть
+          Start Game
         </Button>
       </div>
     </div>
