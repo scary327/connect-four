@@ -79,7 +79,6 @@ const CreateGame: React.FC = () => {
         onSubmit={handleStartGame}
         className={styles.createGame}
       >
-        {/* Game mode */}
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
             Game mode
@@ -118,8 +117,6 @@ const CreateGame: React.FC = () => {
             </label>
           </div>
         </div>
-
-        {/* Bot difficulty - показываем только если выбран режим bot */}
         {selectedMode === "bot" && (
           <div className={styles.section}>
             <Typography.H2 className={styles.sectionTitle}>
@@ -159,8 +156,6 @@ const CreateGame: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Board size */}
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
             Board size
@@ -190,8 +185,6 @@ const CreateGame: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Win condition */}
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
             Pieces to win

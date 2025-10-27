@@ -106,6 +106,52 @@ export const checkWinner = (
   );
 };
 
+export const getWinningLine = (
+  board: (Player | null)[][],
+  row: number,
+  col: number,
+  player: Player,
+  winCondition: number = 4
+): Array<[number, number]> | null => {
+  const rows = board.length;
+  const cols = board[0].length;
+
+  const collect = (dr: number, dc: number) => {
+    const cells: Array<[number, number]> = [[row, col]];
+    // go negative direction
+    let r = row - dr;
+    let c = col - dc;
+    while (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c] === player) {
+      cells.unshift([r, c]);
+      r -= dr;
+      c -= dc;
+    }
+    // go positive direction
+    r = row + dr;
+    c = col + dc;
+    while (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c] === player) {
+      cells.push([r, c]);
+      r += dr;
+      c += dc;
+    }
+    return cells;
+  };
+
+  const directions: Array<[number, number]> = [
+    [0, 1], // horizontal
+    [1, 0], // vertical
+    [1, 1], // diag down-right
+    [1, -1], // diag down-left
+  ];
+
+  for (const [dr, dc] of directions) {
+    const line = collect(dr, dc);
+    if (line.length >= winCondition) return line.slice(-winCondition);
+  }
+
+  return null;
+};
+
 export const getPlayerColor = (player: Player): string => {
   return player === "player1" ? "#ff4757" : "#ffa502";
 };

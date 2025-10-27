@@ -6,23 +6,28 @@ import type { Player } from "src/types/game";
 interface ChipProps {
   player: Player;
   isAnimating?: boolean;
+  isWinning?: boolean;
 }
 
-const Chip: React.FC<ChipProps> = memo(({ player, isAnimating = false }) => {
-  const color = getPlayerColor(player);
+const Chip: React.FC<ChipProps> = memo(
+  ({ player, isAnimating = false, isWinning = false }) => {
+    const color = getPlayerColor(player);
 
-  return (
-    <div
-      className={`${styles.chip} ${isAnimating ? styles.dropping : ""}`}
-      style={
-        {
-          "--chip-color": color,
-          "--chip-shadow": `${color}80`,
-        } as React.CSSProperties
-      }
-    />
-  );
-});
+    return (
+      <div
+        className={`${styles.chip} ${isAnimating ? styles.dropping : ""} ${
+          isWinning ? styles.winning : ""
+        }`}
+        style={
+          {
+            "--chip-color": color,
+            "--chip-shadow": `${color}80`,
+          } as React.CSSProperties
+        }
+      />
+    );
+  }
+);
 
 Chip.displayName = "Chip";
 

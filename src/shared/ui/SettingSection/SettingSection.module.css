@@ -8,7 +8,6 @@
   margin-top: 18px;
 }
 
-/* layout: left column (meta) and right column (controls) */
 .row {
   display: flex;
   align-items: center;

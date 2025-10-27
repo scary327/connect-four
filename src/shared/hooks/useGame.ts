@@ -5,6 +5,7 @@ import type { GameState, GameConfig, GameMode } from "src/types/game";
 import {
   generateGameId,
   checkWinner,
+  getWinningLine,
   isBoardFull,
   findAvailableRow,
   switchPlayer,
@@ -31,6 +32,7 @@ export const useGame = (config: GameConfig): UseGameReturn => {
       currentPlayer: "player1",
       moves: [],
       winner: null,
+      winningLine: undefined,
       isGameOver: false,
     }),
     [rows, columns, gameMode]
@@ -59,6 +61,16 @@ export const useGame = (config: GameConfig): UseGameReturn => {
         winCondition
       );
 
+      const winningLine = hasWon
+        ? getWinningLine(
+            newBoard,
+            availableRow,
+            column,
+            gameState.currentPlayer,
+            winCondition
+          ) || undefined
+        : undefined;
+
       const isDraw = !hasWon && isBoardFull(newBoard);
 
       setGameState({
@@ -66,6 +78,7 @@ export const useGame = (config: GameConfig): UseGameReturn => {
         board: newBoard,
         moves: [...gameState.moves, column],
         winner: hasWon ? gameState.currentPlayer : isDraw ? "draw" : null,
+        winningLine: winningLine,
         isGameOver: hasWon || isDraw,
         currentPlayer:
           hasWon || isDraw

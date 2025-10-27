@@ -15,6 +15,7 @@ interface ColumnProps {
   cells: CellValue[];
   animatingCells: Set<string>;
   fallingChip: FallingChipData | null;
+  winningCells?: Set<string>;
   onColumnClick: () => void;
   showIndicator?: boolean;
 }
@@ -25,6 +26,7 @@ const Column: React.FC<ColumnProps> = memo(
     cells,
     animatingCells,
     fallingChip,
+    winningCells,
     onColumnClick,
     showIndicator = true,
   }) => {
@@ -60,12 +62,14 @@ const Column: React.FC<ColumnProps> = memo(
         {cells.map((cell, rowIndex) => {
           const cellKey = `${rowIndex}-${columnIndex}`;
           const isAnimating = animatingCells.has(cellKey);
+          const isWinning = winningCells ? winningCells.has(cellKey) : false;
 
           return (
             <Cell
               key={rowIndex}
               value={cell}
               isAnimating={isAnimating}
+              isWinning={isWinning}
               onClick={(e) => {
                 e.stopPropagation();
                 onColumnClick();

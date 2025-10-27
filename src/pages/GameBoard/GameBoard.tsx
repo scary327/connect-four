@@ -166,6 +166,14 @@ const GameBoard: React.FC<GameBoardProps> = memo(
       )
     );
 
+    // Build a set of winning cell keys for quick lookup
+    const winningSet = new Set<string>();
+    if (game.winningLine) {
+      for (const [r, c] of game.winningLine) {
+        winningSet.add(`${r}-${c}`);
+      }
+    }
+
     return (
       <>
         <GameInfo
@@ -188,6 +196,7 @@ const GameBoard: React.FC<GameBoardProps> = memo(
                 key={colIndex}
                 columnIndex={colIndex}
                 cells={cells}
+                winningCells={winningSet}
                 animatingCells={animatingCells}
                 fallingChip={
                   fallingChip?.columnIndex === colIndex &&

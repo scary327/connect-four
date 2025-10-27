@@ -17,5 +17,7 @@ export interface GameState {
   currentPlayer: Player;
   moves: number[];
   winner: Player | "draw" | null;
+  // winningLine holds the coordinates [row, col] of the winning sequence when a player wins
+  winningLine?: Array<[number, number]>;
   isGameOver: boolean;
 }

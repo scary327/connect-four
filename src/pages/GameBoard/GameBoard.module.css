@@ -12,8 +12,6 @@
   width: fit-content;
 }
 
-/* When blocked (bot turn) disable pointer events on the board and show busy cursor.
-   Minimal: only pointer-events and cursor — no background/overlay. */
 .blocked {
   pointer-events: none;
   cursor: progress;
