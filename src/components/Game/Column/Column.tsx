@@ -80,9 +80,6 @@ const Column: React.FC<ColumnProps> = memo(
   }
 );
 
-// Small internal component that reads the posRef and updates itself via RAF.
-// This keeps indicator updates local to this child and prevents Column from
-// rerendering on every pointer movement.
 const ColumnIndicator: React.FC<{
   posRef: React.RefObject<{ x: number; y: number } | null>;
 }> = memo(({ posRef }) => {

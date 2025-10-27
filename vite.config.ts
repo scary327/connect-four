@@ -16,6 +16,7 @@ export default defineConfig({
       { find: "@assets", replacement: path.resolve(__dirname, "src/assets") },
       { find: "@widgets", replacement: path.resolve(__dirname, "src/widgets") },
       { find: "@app", replacement: path.resolve(__dirname, "src/app") },
+      { find: "wasm", replacement: path.resolve(__dirname, "wasm") },
     ],
   },
 });

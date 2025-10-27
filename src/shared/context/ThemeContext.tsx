@@ -6,7 +6,6 @@ import type { Theme, ThemeContextValue } from "@shared/context/themeStore";
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Prefer system setting if available, otherwise default to dark (matches CSS default)
   const prefersLight =
     typeof window !== "undefined" &&
     window.matchMedia &&
@@ -21,7 +20,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       document.documentElement.setAttribute("data-theme", theme);
     } catch {
-      // silently ignore if DOM not available
+      console.error("[ThemeProvider] Failed to set theme:", theme);
     }
   }, [theme]);
 

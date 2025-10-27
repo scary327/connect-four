@@ -1,5 +1,3 @@
-// src/shared/utils/gameHelpers.ts
-
 import type { Player } from "src/types/game";
 
 export const generateGameId = (): string => {
@@ -44,7 +42,6 @@ export const checkWinner = (
   const rows = board.length;
   const cols = board[0].length;
 
-  // Проверка по горизонтали
   const checkHorizontal = (): boolean => {
     let count = 0;
     for (let c = 0; c < cols; c++) {
@@ -58,7 +55,6 @@ export const checkWinner = (
     return false;
   };
 
-  // Проверка по вертикали
   const checkVertical = (): boolean => {
     let count = 0;
     for (let r = 0; r < rows; r++) {
@@ -72,7 +68,6 @@ export const checkWinner = (
     return false;
   };
 
-  // Проверка по диагонали (слева-снизу -> справа-сверху)
   const checkDiagonal1 = (): boolean => {
     let count = 0;
     const startRow = row - Math.min(row, col);
@@ -89,7 +84,6 @@ export const checkWinner = (
     return false;
   };
 
-  // Проверка по диагонали (слева-сверху -> справа-снизу)
   const checkDiagonal2 = (): boolean => {
     let count = 0;
     const offset = Math.min(row, cols - 1 - col);

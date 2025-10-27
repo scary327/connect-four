@@ -37,6 +37,7 @@
   transition: all 0.2s ease;
   font-size: 14px;
   color: var(--text-color);
+  text-align: center;
 }
 
 .modeButton:hover:not(:disabled) {
@@ -86,4 +87,34 @@
 .numberInput::-webkit-inner-spin-button,
 .numberInput::-webkit-outer-spin-button {
   opacity: 1;
+}
+
+.difficultySwitch {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.difficultyButton {
+  flex: 1;
+  padding: 12px 24px;
+  background-color: rgba(124, 77, 255, 0.1);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.difficultyButton:hover {
+  background-color: rgba(124, 77, 255, 0.2);
+  border-color: rgba(124, 77, 255, 0.3);
+}
+
+.difficultyButton:has(input:checked) {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
 }

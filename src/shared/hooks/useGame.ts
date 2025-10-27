@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
-import { useLocalStorage } from "./useLocalStorage";
+import { useState, useCallback, useEffect } from "react";
+import { useBotWasm } from "./useBotWasm";
+
 import type { GameState, GameConfig, GameMode } from "src/types/game";
 import {
   generateGameId,
@@ -10,18 +11,17 @@ import {
 } from "../utils/gameHelpers";
 
 interface UseGameReturn extends GameState {
-  makeMove: (column: number) => boolean;
+  makeMove: (column: number, isBot?: boolean) => boolean;
+  pendingBotMove: number | null;
+  applyBotMove: (column: number) => void;
   resetGame: () => void;
   setGameMode: (mode: GameMode) => void;
 }
 
 export const useGame = (config: GameConfig): UseGameReturn => {
-  const { rows, columns, winCondition } = config;
+  const { rows, columns, winCondition, mode, difficulty = "easy" } = config;
 
-  const [gameMode, setGameMode] = useLocalStorage<GameMode>(
-    "connect4-game-mode",
-    config.mode
-  );
+  const [gameMode, setGameMode] = useState<GameMode>(mode);
 
   const createInitialState = useCallback(
     (): GameState => ({
@@ -38,24 +38,19 @@ export const useGame = (config: GameConfig): UseGameReturn => {
 
   const [gameState, setGameState] = useState<GameState>(createInitialState);
 
-  /**
-   * Делает ход в указанную колонку
-   * @returns true если ход успешен, false если нет
-   */
   const makeMove = useCallback(
-    (column: number): boolean => {
-      // Проверки валидности хода
+    (column: number, isBot: boolean = false): boolean => {
       if (gameState.isGameOver) return false;
+      if (gameMode === "bot" && gameState.currentPlayer === "player2" && !isBot)
+        return false;
       if (column < 0 || column >= columns) return false;
 
       const availableRow = findAvailableRow(gameState.board, column);
-      if (availableRow === -1) return false; // Колонка заполнена
+      if (availableRow === -1) return false;
 
-      // Создаем новую доску с ходом
       const newBoard = gameState.board.map((row) => [...row]);
       newBoard[availableRow][column] = gameState.currentPlayer;
 
-      // Проверяем победу с учетом winCondition
       const hasWon = checkWinner(
         newBoard,
         availableRow,
@@ -64,10 +59,8 @@ export const useGame = (config: GameConfig): UseGameReturn => {
         winCondition
       );
 
-      // Проверяем ничью
       const isDraw = !hasWon && isBoardFull(newBoard);
 
-      // Обновляем состояние игры
       setGameState({
         ...gameState,
         board: newBoard,
@@ -82,19 +75,65 @@ export const useGame = (config: GameConfig): UseGameReturn => {
 
       return true;
     },
-    [gameState, columns, winCondition]
+    [gameState, columns, winCondition, gameMode]
   );
 
-  /**
-   * Сбрасывает игру
-   */
+  const [pendingBotMove, setPendingBotMove] = useState<number | null>(null);
+
+  const applyBotMove = useCallback(
+    (column: number) => {
+      makeMove(column, true);
+      setPendingBotMove(null);
+    },
+    [makeMove]
+  );
+
+  const botMoveFn = useBotWasm();
+  useEffect(() => {
+    if (
+      gameMode === "bot" &&
+      gameState.currentPlayer === "player2" &&
+      !gameState.isGameOver &&
+      botMoveFn
+    ) {
+      let cancelled = false;
+      const id = setTimeout(async () => {
+        const column = await botMoveFn(
+          gameState.moves,
+          difficulty,
+          rows,
+          columns,
+          winCondition
+        );
+
+        if (cancelled) return;
+        if (typeof column === "number" && column >= 0 && column < columns) {
+          setPendingBotMove(column);
+        }
+      }, 40);
+
+      return () => {
+        cancelled = true;
+        clearTimeout(id);
+      };
+    }
+  }, [
+    gameMode,
+    gameState.currentPlayer,
+    gameState.isGameOver,
+    botMoveFn,
+    gameState.moves,
+    difficulty,
+    rows,
+    columns,
+    winCondition,
+    makeMove,
+  ]);
+
   const resetGame = useCallback(() => {
     setGameState(createInitialState());
   }, [createInitialState]);
 
-  /**
-   * Устанавливает режим игры
-   */
   const handleSetGameMode = useCallback(
     (mode: GameMode) => {
       setGameMode(mode);
@@ -103,12 +142,14 @@ export const useGame = (config: GameConfig): UseGameReturn => {
         mode,
       });
     },
-    [createInitialState, setGameMode]
+    [createInitialState]
   );
 
   return {
     ...gameState,
     makeMove,
+    pendingBotMove,
+    applyBotMove,
     resetGame,
     setGameMode: handleSetGameMode,
   };

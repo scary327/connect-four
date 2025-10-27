@@ -9,7 +9,6 @@ export interface ThemeContextValue {
   toggleTheme: () => void;
 }
 
-// Context only (no components exported from this file)
 export const ThemeContext = createContext<ThemeContextValue | undefined>(
   undefined
 );

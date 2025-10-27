@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+/wasm/connect4_bot/target/
+/wasm/connect4_bot/pkg/
+/wasm/connect4_bot/Cargo.lock

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import styles from "./GameBoard.module.css";
 import { useGame } from "@shared/hooks/useGame";
 import { useGameBoard } from "@shared/hooks/useGameBoard";
@@ -12,11 +12,31 @@ interface GameBoardProps {
   columns: number;
   winCondition?: number;
   mode?: GameMode;
+  difficulty?: "easy" | "medium" | "insane";
 }
 
 const GameBoard: React.FC<GameBoardProps> = memo(
-  ({ rows, columns, winCondition = 4, mode = "local" }) => {
-    const game = useGame({ rows, columns, winCondition, mode });
+  ({
+    rows,
+    columns,
+    winCondition = 4,
+    mode = "local",
+    difficulty = "easy",
+  }) => {
+    const game = useGame({ rows, columns, winCondition, mode, difficulty });
+    const {
+      currentPlayer,
+      mode: gameMode,
+      isGameOver,
+      board: gameBoard,
+      moves: gameMoves,
+      makeMove: makeMoveFn,
+      pendingBotMove,
+      applyBotMove,
+      resetGame,
+      setGameMode,
+      winner,
+    } = game;
 
     const {
       fallingChip,
@@ -26,45 +46,142 @@ const GameBoard: React.FC<GameBoardProps> = memo(
       startAnimating,
     } = useGameBoard(rows);
 
+    const lastAnimatedMoveRef = React.useRef<number>(-1);
+
     const handleColumnClick = (columnIndex: number) => {
-      if (game.isGameOver) return;
+      if (isGameOver) return;
       if (fallingChip || animatingCells.size > 0) return;
 
-      const targetRow = findAvailableRow(game.board, columnIndex);
+      if (gameMode === "bot" && currentPlayer === "player2") return;
+
+      const targetRow = findAvailableRow(gameBoard, columnIndex);
       if (targetRow === -1) return;
 
-      const currentPlayer = game.currentPlayer;
+      const actor = currentPlayer;
 
       if (animationType === "fall") {
-        startFalling(columnIndex, targetRow, currentPlayer);
+        lastAnimatedMoveRef.current = gameMoves.length;
+        startFalling(columnIndex, targetRow, actor);
         setTimeout(() => {
-          game.makeMove(columnIndex);
+          makeMoveFn(columnIndex);
         }, 50 + targetRow * 100);
       } else {
-        const moveSuccess = game.makeMove(columnIndex);
+        lastAnimatedMoveRef.current = gameMoves.length;
+        const moveSuccess = makeMoveFn(columnIndex);
         if (moveSuccess) {
           startAnimating(targetRow, columnIndex);
         }
       }
     };
 
+    useEffect(() => {
+      if (pendingBotMove == null) return;
+      if (isGameOver) return;
+      if (fallingChip || animatingCells.size > 0) return;
+
+      const columnIndex = pendingBotMove;
+      const targetRow = findAvailableRow(gameBoard, columnIndex);
+      if (targetRow === -1) return;
+
+      lastAnimatedMoveRef.current = gameMoves.length;
+
+      if (animationType === "fall") {
+        startFalling(columnIndex, targetRow, "player2");
+        setTimeout(() => {
+          applyBotMove(columnIndex);
+        }, 50 + targetRow * 100);
+      } else {
+        applyBotMove(columnIndex);
+        startAnimating(targetRow, columnIndex);
+      }
+    }, [
+      pendingBotMove,
+      isGameOver,
+      fallingChip,
+      animatingCells,
+      gameBoard,
+      gameMoves.length,
+      animationType,
+      startFalling,
+      startAnimating,
+      applyBotMove,
+    ]);
+
+    const prevMovesRef = React.useRef<number>(gameMoves.length);
+
+    useEffect(() => {
+      if (gameMoves.length > prevMovesRef.current) {
+        const lastIdx = gameMoves.length - 1;
+
+        if (lastIdx <= lastAnimatedMoveRef.current) {
+          prevMovesRef.current = gameMoves.length;
+          return;
+        }
+
+        const lastCol = gameMoves[lastIdx];
+        const lastPlayer = lastIdx % 2 === 0 ? "player1" : "player2";
+
+        if (
+          lastPlayer === "player2" &&
+          !fallingChip &&
+          animatingCells.size === 0
+        ) {
+          const prevMoves = gameMoves.slice(0, lastIdx);
+          const prevCount = prevMoves.reduce(
+            (acc, c) => (c === lastCol ? acc + 1 : acc),
+            0
+          );
+          const targetRow = rows - 1 - prevCount;
+
+          if (targetRow >= 0 && targetRow < rows) {
+            lastAnimatedMoveRef.current = lastIdx;
+
+            if (animationType === "fall") {
+              startFalling(lastCol, targetRow, "player2");
+              setTimeout(() => {
+                startAnimating(targetRow, lastCol);
+              }, 50 + targetRow * 100);
+            } else {
+              startAnimating(targetRow, lastCol);
+            }
+          }
+        }
+      }
+
+      prevMovesRef.current = gameMoves.length;
+    }, [
+      gameMoves,
+      fallingChip,
+      animatingCells,
+      rows,
+      animationType,
+      startFalling,
+      startAnimating,
+    ]);
+
     const columnData = Array.from({ length: columns }, (_, colIndex) =>
       Array.from(
         { length: rows },
-        (_, rowIndex) => game.board[rowIndex][colIndex]
+        (_, rowIndex) => gameBoard[rowIndex][colIndex]
       )
     );
 
     return (
       <>
         <GameInfo
-          currentPlayer={game.currentPlayer}
-          winner={game.winner}
-          mode={game.mode}
-          onReset={game.resetGame}
-          onModeChange={game.setGameMode}
+          currentPlayer={currentPlayer}
+          winner={winner}
+          mode={gameMode}
+          onReset={resetGame}
+          onModeChange={setGameMode}
         />
-        <div className={styles.boardContainer}>
+        <div
+          className={`${styles.boardContainer} ${
+            gameMode === "bot" && currentPlayer === "player2" && !isGameOver
+              ? styles.blocked
+              : ""
+          }`}
+        >
           <div className={styles.board}>
             {columnData.map((cells, colIndex) => (
               <Column

@@ -12,7 +12,6 @@ const ErrorBoundary = () => {
   if (isRouteErrorResponse(error)) {
     statusCode = error.status.toString();
   } else if (error instanceof Error) {
-    // keep status as ERROR for client errors — we show a unified message
     statusCode = "ERROR";
   }
 

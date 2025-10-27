@@ -8,10 +8,10 @@ interface GameState {
   rows: number;
   columns: number;
   winCondition: number;
+  difficulty?: "easy" | "medium" | "insane";
 }
 
 const GameSession: React.FC = () => {
-  //   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const state = location.state as GameState | null;
 
@@ -19,7 +19,7 @@ const GameSession: React.FC = () => {
     return <Navigate to="/game" replace />;
   }
 
-  const { rows, columns, winCondition, mode } = state;
+  const { rows, columns, winCondition, mode, difficulty = "easy" } = state;
 
   return (
     <div className="centered">
@@ -28,6 +28,7 @@ const GameSession: React.FC = () => {
         columns={columns}
         winCondition={winCondition}
         mode={mode}
+        difficulty={difficulty}
       />
     </div>
   );

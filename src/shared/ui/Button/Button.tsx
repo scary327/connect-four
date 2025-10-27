@@ -91,7 +91,6 @@ const Button = React.forwardRef<HTMLElement, ButtonProps>((props, ref) => {
     );
   }
 
-  // Render as react-router Link when `to` provided
   const maybeLink = rest as Partial<ButtonAsLink>;
   if (typeof maybeLink.to === "string") {
     const { to, ...linkRest } = rest as ButtonAsLink;
