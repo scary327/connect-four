@@ -1,10 +1,11 @@
 import React, { memo, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import styles from "./GameBoard.module.css";
 import { useGame } from "@shared/hooks/useGame";
 import { useGameBoard } from "@shared/hooks/useGameBoard";
 import Column from "@components/Game/Column/Column";
 import GameInfo from "@components/Game/GameInfo/GameInfo";
-import { findAvailableRow } from "@shared/utils/gameHelpers";
+import { findAvailableRow, generateGameId } from "@shared/utils/gameHelpers";
 import type { GameMode } from "src/types/game";
 
 interface GameBoardProps {
@@ -23,7 +24,14 @@ const GameBoard: React.FC<GameBoardProps> = memo(
     mode = "local",
     difficulty = "easy",
   }) => {
-    const game = useGame({ rows, columns, winCondition, mode, difficulty });
+    const params = useParams();
+    const gameId = params.id ?? generateGameId();
+
+    const game = useGame(
+      { rows, columns, winCondition, mode, difficulty },
+      gameId
+    );
+
     const {
       currentPlayer,
       mode: gameMode,
@@ -44,7 +52,7 @@ const GameBoard: React.FC<GameBoardProps> = memo(
       animationType,
       startFalling,
       startAnimating,
-    } = useGameBoard(rows);
+    } = useGameBoard();
 
     const lastAnimatedMoveRef = React.useRef<number>(-1);
 

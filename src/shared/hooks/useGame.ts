@@ -1,15 +1,16 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useBotWasm } from "./useBotWasm";
 
 import type { GameState, GameConfig, GameMode } from "src/types/game";
 import {
-  generateGameId,
   checkWinner,
   getWinningLine,
   isBoardFull,
   findAvailableRow,
   switchPlayer,
 } from "../utils/gameHelpers";
+import { useLocalStorage } from "./useLocalStorage";
+import { LOCALSTORAGE_GAME_NAME } from "@shared/constants/localStorageNames";
 
 interface UseGameReturn extends GameState {
   makeMove: (column: number, isBot?: boolean) => boolean;
@@ -19,15 +20,15 @@ interface UseGameReturn extends GameState {
   setGameMode: (mode: GameMode) => void;
 }
 
-export const useGame = (config: GameConfig): UseGameReturn => {
+export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
   const { rows, columns, winCondition, mode, difficulty = "easy" } = config;
 
   const [gameMode, setGameMode] = useState<GameMode>(mode);
 
   const createInitialState = useCallback(
-    (): GameState => ({
-      id: generateGameId(),
-      mode: gameMode,
+    (id: string, currentMode: GameMode = gameMode): GameState => ({
+      id,
+      mode: currentMode,
       board: Array.from({ length: rows }, () => Array(columns).fill(null)),
       currentPlayer: "player1",
       moves: [],
@@ -38,7 +39,33 @@ export const useGame = (config: GameConfig): UseGameReturn => {
     [rows, columns, gameMode]
   );
 
-  const [gameState, setGameState] = useState<GameState>(createInitialState);
+  const [games, setGames] = useLocalStorage<{ [key: string]: GameState }>(
+    LOCALSTORAGE_GAME_NAME,
+    {}
+  );
+
+  const updateGameById = useCallback(
+    (id: string, updater: (state: GameState) => GameState): void => {
+      setGames((prev) => {
+        if (!prev || !(id in prev)) return prev;
+        const current = prev[id];
+        return { ...prev, [id]: updater(current) };
+      });
+    },
+    [setGames]
+  );
+
+  const gameState = useMemo((): GameState => {
+    return games[gameId] ?? createInitialState(gameId);
+  }, [games, gameId, createInitialState]);
+
+  // Инициализация, если игры нет (избегаем loop в useMemo)
+  useEffect(() => {
+    if (!games[gameId]) {
+      const initialState = createInitialState(gameId);
+      setGames((prev) => ({ ...prev, [gameId]: initialState }));
+    }
+  }, [gameId, games, createInitialState, setGames]);
 
   const makeMove = useCallback(
     (column: number, isBot: boolean = false): boolean => {
@@ -73,22 +100,24 @@ export const useGame = (config: GameConfig): UseGameReturn => {
 
       const isDraw = !hasWon && isBoardFull(newBoard);
 
-      setGameState({
+      const newState: GameState = {
         ...gameState,
         board: newBoard,
         moves: [...gameState.moves, column],
         winner: hasWon ? gameState.currentPlayer : isDraw ? "draw" : null,
-        winningLine: winningLine,
+        winningLine,
         isGameOver: hasWon || isDraw,
         currentPlayer:
           hasWon || isDraw
             ? gameState.currentPlayer
             : switchPlayer(gameState.currentPlayer),
-      });
+      };
+
+      updateGameById(gameId, () => newState);
 
       return true;
     },
-    [gameState, columns, winCondition, gameMode]
+    [gameState, columns, winCondition, gameMode, gameId, updateGameById]
   );
 
   const [pendingBotMove, setPendingBotMove] = useState<number | null>(null);
@@ -140,22 +169,20 @@ export const useGame = (config: GameConfig): UseGameReturn => {
     rows,
     columns,
     winCondition,
-    makeMove,
   ]);
 
   const resetGame = useCallback(() => {
-    setGameState(createInitialState());
-  }, [createInitialState]);
+    const newInitial = createInitialState(gameId);
+    updateGameById(gameId, () => newInitial);
+  }, [createInitialState, gameId, updateGameById]);
 
   const handleSetGameMode = useCallback(
-    (mode: GameMode) => {
-      setGameMode(mode);
-      setGameState({
-        ...createInitialState(),
-        mode,
-      });
+    (newMode: GameMode) => {
+      setGameMode(newMode);
+      const newInitial = createInitialState(gameId, newMode);
+      updateGameById(gameId, () => newInitial);
     },
-    [createInitialState]
+    [createInitialState, gameId, updateGameById]
   );
 
   return {

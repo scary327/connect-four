@@ -1,9 +1,12 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./CreateGame.module.css";
 import Typography from "@shared/ui/Typography/Typography";
-import type { GameMode } from "src/types/game";
+import type { GameMode, GameState } from "src/types/game";
 import Button from "@shared/ui/Button/Button";
+import { useLocalStorage } from "@shared/hooks/useLocalStorage";
+import { LOCALSTORAGE_GAME_NAME } from "@shared/constants/localStorageNames";
+import { generateGameId } from "@shared/utils/gameHelpers";
 
 type Difficulty = "easy" | "medium" | "hard" | "insane";
 
@@ -52,6 +55,15 @@ const CreateGame: React.FC = () => {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [selectedMode, setSelectedMode] = React.useState<GameMode>("local");
 
+  const [gameState, setGameState] = useLocalStorage<{
+    [key: string]: GameState;
+  }>(LOCALSTORAGE_GAME_NAME, {});
+
+  const currentOnGoingGame: GameState | null = useMemo(() => {
+    const first = Object.values(gameState ?? {})[0];
+    return first && first.isGameOver === false ? first : null;
+  }, [gameState]);
+
   const handleStartGame = useCallback(
     (e?: React.FormEvent<HTMLFormElement>) => {
       if (e) e.preventDefault();
@@ -61,19 +73,43 @@ const CreateGame: React.FC = () => {
 
       const values = getFormValues(fd);
 
-      const gameId = Date.now().toString();
+      const gameId = generateGameId();
 
       navigate(`/game/${gameId}`, {
         state: values,
       });
     },
-    [navigate]
+    [navigate, setGameState]
   );
 
   return (
     <div className="centered">
-      <Typography.H1>Create Game</Typography.H1>
+      {currentOnGoingGame !== null && (
+        <div className={styles.resumeBanner}>
+          <Typography.H2>
+            You have an ongoing game.{" "}
+            <Button
+              className={styles.resumeLink}
+              variant="secondary"
+              onClick={() =>
+                navigate(`/game/${currentOnGoingGame.id}`, {
+                  state: {
+                    mode: currentOnGoingGame.mode,
+                    rows: currentOnGoingGame.board.length,
+                    columns: currentOnGoingGame.board[0].length,
+                    winCondition: currentOnGoingGame.winCondition ?? 4,
+                    difficulty: currentOnGoingGame.difficulty ?? "easy",
+                  },
+                })
+              }
+            >
+              Continue
+            </Button>
+          </Typography.H2>
+        </div>
+      )}
 
+      <Typography.H1>Create Game</Typography.H1>
       <form
         ref={formRef}
         onSubmit={handleStartGame}

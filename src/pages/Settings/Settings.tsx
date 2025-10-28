@@ -5,11 +5,12 @@ import Typography from "@shared/ui/Typography/Typography";
 import SettingSection from "@shared/ui/SettingSection/SettingSection";
 import { useLocalStorage } from "@shared/hooks/useLocalStorage";
 import type { AnimationType } from "@shared/hooks/useGameBoard";
+import { LOCALSTORAGE_ANIMATION_TYPE } from "@shared/constants/localStorageNames";
 
 const Settings: React.FC = () => {
   const { isLight, toggleTheme } = useTheme();
   const [animationType, setAnimationType] = useLocalStorage<AnimationType>(
-    "connect4-animation-type",
+    LOCALSTORAGE_ANIMATION_TYPE,
     "fall"
   );
 

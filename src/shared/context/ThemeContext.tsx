@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { useLocalStorage } from "@shared/hooks/useLocalStorage";
 import { ThemeContext } from "@shared/context/themeStore";
 import type { Theme, ThemeContextValue } from "@shared/context/themeStore";
+import { LOCALSTORAGE_THEME } from "@shared/constants/localStorageNames";
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -12,7 +13,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     window.matchMedia("(prefers-color-scheme: light)").matches;
 
   const [theme, setTheme] = useLocalStorage<Theme>(
-    "theme",
+    LOCALSTORAGE_THEME,
     prefersLight ? "light" : "dark"
   );
 

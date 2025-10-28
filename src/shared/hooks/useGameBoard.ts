@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useLocalStorage } from "./useLocalStorage";
 import type { Player } from "src/types/game";
+import { LOCALSTORAGE_ANIMATION_TYPE } from "@shared/constants/localStorageNames";
 
 export type AnimationType = "drop" | "fall";
 
@@ -23,11 +24,11 @@ interface UseGameBoardReturn {
   startAnimating: (row: number, column: number) => void;
 }
 
-export const useGameBoard = (_rows: number): UseGameBoardReturn => {
+export const useGameBoard = (): UseGameBoardReturn => {
   const [fallingChip, setFallingChip] = useState<FallingChipState | null>(null);
   const [animatingCells, setAnimatingCells] = useState<Set<string>>(new Set());
   const [animationType, setAnimationType] = useLocalStorage<AnimationType>(
-    "connect4-animation-type",
+    LOCALSTORAGE_ANIMATION_TYPE,
     "fall"
   );
 

@@ -118,3 +118,32 @@
   border-color: var(--primary-color);
   color: white;
 }
+
+.resumeBanner {
+  background: linear-gradient(
+    180deg,
+    rgba(124, 77, 255, 0.06),
+    rgba(124, 77, 255, 0.03)
+  );
+  border: 1px solid rgba(124, 77, 255, 0.12);
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-color);
+}
+
+.resumeLink {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.resumeLink:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}

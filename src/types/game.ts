@@ -7,7 +7,7 @@ export interface GameConfig {
   columns: number;
   winCondition: number;
   mode: GameMode;
-  difficulty?: "easy" | "medium" | "insane";
+  difficulty?: "easy" | "medium" | "hard" | "insane";
 }
 
 export interface GameState {
@@ -17,6 +17,8 @@ export interface GameState {
   currentPlayer: Player;
   moves: number[];
   winner: Player | "draw" | null;
+  winCondition?: number;
+  difficulty?: "easy" | "medium" | "hard" | "insane";
   winningLine?: Array<[number, number]>;
   isGameOver: boolean;
 }
