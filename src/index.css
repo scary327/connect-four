@@ -21,11 +21,18 @@
   --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: Arial, sans-serif;
+  /* allow page scrolling; individual centered areas manage their own scroll */
+  overflow-y: auto;
 }
 
 .centered {
@@ -33,5 +40,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 71px);
+  padding: 20px 0;
+  /* allow internal scrolling when content overflows the viewport minus header */
+  overflow-y: auto;
+  min-height: calc(100vh - var(--layout-height));
 }

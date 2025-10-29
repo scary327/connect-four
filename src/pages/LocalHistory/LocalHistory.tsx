@@ -61,7 +61,9 @@ const LocalHistory: React.FC = () => {
             g.winner === "draw"
               ? "Draw"
               : g.winner
-              ? g.winner === "player1"
+              ? g.mode === "bot"
+                ? getPlayerName(g.winner as Player, "bot")
+                : g.winner === "player1"
                 ? "Player 1"
                 : "Player 2"
               : "Ongoing";

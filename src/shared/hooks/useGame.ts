@@ -34,9 +34,11 @@ export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
       moves: [],
       winner: null,
       winningLine: undefined,
+      winCondition: winCondition,
+      difficulty: difficulty,
       isGameOver: false,
     }),
-    [rows, columns, gameMode]
+    [rows, columns, gameMode, winCondition, difficulty]
   );
 
   const [games, setGames] = useLocalStorage<{ [key: string]: GameState }>(
@@ -63,7 +65,25 @@ export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
   useEffect(() => {
     if (!games[gameId]) {
       const initialState = createInitialState(gameId);
-      setGames((prev) => ({ ...prev, [gameId]: initialState }));
+      setGames((prev) => {
+        const prevMap = prev ?? {};
+        // place new game at the beginning
+        const next: { [key: string]: GameState } = {
+          [gameId]: initialState,
+          ...prevMap,
+        };
+
+        // enforce maximum of 10 games — drop oldest keys beyond the 10th
+        const keys = Object.keys(next);
+        if (keys.length > 10) {
+          const toRemove = keys.slice(10);
+          for (const k of toRemove) {
+            delete next[k];
+          }
+        }
+
+        return next;
+      });
     }
   }, [gameId, games, createInitialState, setGames]);
 

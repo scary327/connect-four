@@ -161,7 +161,7 @@ export const getPlayerName = (
   mode: "local" | "bot"
 ): string => {
   if (mode === "bot") {
-    return player === "player1" ? "Вы" : "Бот";
+    return player === "player1" ? "You" : "Bot";
   }
-  return player === "player1" ? "Игрок 1" : "Игрок 2";
+  return player === "player1" ? "Player 1" : "Player 2";
 };
