@@ -1,0 +1,25 @@
+{
+  "settings": {
+    "title": "Settings",
+    "appearance": {
+      "title": "Appearance",
+      "description": "Theme preference is saved to localStorage.",
+      "theme": "Theme",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "animation": {
+      "title": "Animation",
+      "description": "Choose how new chips appear on the board.",
+      "label": "Animation Type",
+      "drop": "Drop",
+      "fall": "Fall"
+    },
+    "language": {
+      "title": "Language",
+      "description": "Select your preferred language.",
+      "russian": "RU",
+      "english": "EN"
+    }
+  }
+}

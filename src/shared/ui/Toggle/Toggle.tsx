@@ -17,7 +17,9 @@ const Toggle: React.FC<ToggleProps> = memo(
         <div className={styles.toggleContainer}>
           {leftLabel && (
             <span
-              className={`${styles.sideLabel} ${!isOn ? styles.active : ""}`}
+              className={`${styles.sideLabel} ${!isOn ? styles.active : ""} ${
+                styles.leftLabel
+              }`}
             >
               {leftLabel}
             </span>
@@ -34,7 +36,9 @@ const Toggle: React.FC<ToggleProps> = memo(
           </button>
           {rightLabel && (
             <span
-              className={`${styles.sideLabel} ${isOn ? styles.active : ""}`}
+              className={`${styles.sideLabel} ${isOn ? styles.active : ""} ${
+                styles.rightLabel
+              }`}
             >
               {rightLabel}
             </span>
