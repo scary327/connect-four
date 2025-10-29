@@ -19,4 +19,8 @@ export default defineConfig({
       { find: "wasm", replacement: path.resolve(__dirname, "wasm") },
     ],
   },
+  preview: {
+    host: "0.0.0.0",
+    port: 5173,
+  },
 });

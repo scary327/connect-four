@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "npm run build:wasm && vite",
-    "build": "npm run build:wasm && tsc -b && vite build",
-    "build:wasm": "cd wasm/connect4_bot && npx wasm-pack build --release --target web",
+    "build:wasm": "cd wasm/connect4_bot && wasm-pack build --release --target web",
+    "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -32,7 +32,6 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.45.0",
     "vite": "^7.1.7",
-    "vite-plugin-svgr": "^4.5.0",
-    "wasm-pack": "^0.13.1"
+    "vite-plugin-svgr": "^4.5.0"
   }
 }
