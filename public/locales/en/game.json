@@ -1,5 +1,6 @@
 {
   "draw": "Draw!",
   "won": "Won",
-  "turn": "Turn:"
+  "turn": "Turn:",
+  "newGame": "New game"
 }

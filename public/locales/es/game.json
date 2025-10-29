@@ -1,5 +1,6 @@
 {
   "draw": "¡Empate!",
   "won": "Ganó",
-  "turn": "Turno:"
+  "turn": "Turno:",
+  "newGame": "Nueva partida"
 }
