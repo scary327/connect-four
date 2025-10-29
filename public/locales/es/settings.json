@@ -1,0 +1,24 @@
+{
+  "title": "Ajustes",
+  "appearance": {
+    "title": "Apariencia",
+    "description": "La preferencia de tema se guarda en localStorage.",
+    "theme": "Tema",
+    "dark": "Oscuro",
+    "light": "Claro"
+  },
+  "animation": {
+    "title": "Animación",
+    "description": "Elige cómo aparecen las fichas en el tablero.",
+    "label": "Tipo de animación",
+    "drop": "Caída",
+    "fall": "Deslizamiento"
+  },
+  "language": {
+    "title": "Idioma",
+    "description": "Seleccione su idioma preferido.",
+    "russian": "RU",
+    "english": "EN",
+    "spanish": "ES"
+  }
+}

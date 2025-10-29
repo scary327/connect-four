@@ -1,4 +1,5 @@
 import type { Player } from "src/types/game";
+import i18n from "i18next";
 
 export const generateGameId = (): string => {
   return `game-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -118,7 +119,6 @@ export const getWinningLine = (
 
   const collect = (dr: number, dc: number) => {
     const cells: Array<[number, number]> = [[row, col]];
-    // go negative direction
     let r = row - dr;
     let c = col - dc;
     while (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c] === player) {
@@ -126,7 +126,6 @@ export const getWinningLine = (
       r -= dr;
       c -= dc;
     }
-    // go positive direction
     r = row + dr;
     c = col + dc;
     while (r >= 0 && r < rows && c >= 0 && c < cols && board[r][c] === player) {
@@ -138,10 +137,10 @@ export const getWinningLine = (
   };
 
   const directions: Array<[number, number]> = [
-    [0, 1], // horizontal
-    [1, 0], // vertical
-    [1, 1], // diag down-right
-    [1, -1], // diag down-left
+    [0, 1],
+    [1, 0],
+    [1, 1],
+    [1, -1],
   ];
 
   for (const [dr, dc] of directions) {
@@ -161,7 +160,11 @@ export const getPlayerName = (
   mode: "local" | "bot"
 ): string => {
   if (mode === "bot") {
-    return player === "player1" ? "You" : "Bot";
+    return player === "player1"
+      ? i18n.t("status.you", { ns: "history" })
+      : i18n.t("status.bot", { ns: "history" });
   }
-  return player === "player1" ? "Player 1" : "Player 2";
+  return player === "player1"
+    ? i18n.t("status.player1", { ns: "history" })
+    : i18n.t("status.player2", { ns: "history" });
 };

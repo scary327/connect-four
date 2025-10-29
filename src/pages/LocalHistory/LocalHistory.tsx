@@ -7,9 +7,12 @@ import { useLocalStorage } from "@shared/hooks/useLocalStorage";
 import { LOCALSTORAGE_GAME_NAME } from "@shared/constants/localStorageNames";
 import type { GameState, Player } from "src/types/game";
 import { getPlayerColor, getPlayerName } from "@shared/utils/gameHelpers";
+import { useTranslation } from "react-i18next";
 
 const LocalHistory: React.FC = () => {
   const navigate = useNavigate();
+
+  const { t } = useTranslation("history");
 
   const InfoItem: React.FC<{ label: string; children: React.ReactNode }> = ({
     label,
@@ -39,9 +42,9 @@ const LocalHistory: React.FC = () => {
   if (!list.length) {
     return (
       <div className="centered">
-        <Typography.H1>Local history</Typography.H1>
+        <Typography.H1>{t("title")}</Typography.H1>
         <div className={styles.empty}>
-          <Typography.Body>No saved games yet.</Typography.Body>
+          <Typography.Body>{t("empty")}</Typography.Body>
         </div>
       </div>
     );
@@ -49,24 +52,24 @@ const LocalHistory: React.FC = () => {
 
   return (
     <div className="centered">
-      <Typography.H1>Local history</Typography.H1>
+      <Typography.H1>{t("title")}</Typography.H1>
       <div className={styles.list}>
         {list.map((g) => {
           const title =
             g.mode === "bot"
-              ? `Vs Bot (${g.difficulty ?? "easy"})`
+              ? t("status.vsBot", { difficulty: g.difficulty ?? "easy" })
               : "2 Players";
           const sizeText = `${g.board.length} × ${g.board[0]?.length ?? 0}`;
           const resultLabel =
             g.winner === "draw"
-              ? "Draw"
+              ? t("status.draw")
               : g.winner
               ? g.mode === "bot"
                 ? getPlayerName(g.winner as Player, "bot")
                 : g.winner === "player1"
-                ? "Player 1"
-                : "Player 2"
-              : "Ongoing";
+                ? t("status.player1")
+                : t("status.player2")
+              : t("status.ongoing");
 
           return (
             <div
@@ -108,16 +111,18 @@ const LocalHistory: React.FC = () => {
               </div>
 
               <div className={styles.infoCol}>
-                <InfoItem label="Mode">{title}</InfoItem>
-                <InfoItem label="Size">{sizeText}</InfoItem>
-                <InfoItem label="To win">{g.winCondition ?? 4}</InfoItem>
-                <InfoItem label="Result">{resultLabel}</InfoItem>
+                <InfoItem label={t("labels.mode")}>{title}</InfoItem>
+                <InfoItem label={t("labels.size")}>{sizeText}</InfoItem>
+                <InfoItem label={t("labels.toWin")}>
+                  {g.winCondition ?? 4}
+                </InfoItem>
+                <InfoItem label={t("labels.result")}>{resultLabel}</InfoItem>
               </div>
 
               <div className={styles.right}>
                 <Button
                   variant="secondary"
-                  ariaLabel={`Open game ${g.id}`}
+                  ariaLabel={t("openGame", { id: g.id })}
                   onClick={() =>
                     navigate(`/game/${g.id}`, {
                       state: {

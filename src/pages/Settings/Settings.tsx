@@ -1,5 +1,7 @@
 import React from "react";
 import Toggle from "@shared/ui/Toggle/Toggle";
+import Select from "@shared/ui/Select/Select";
+import type { SelectOption } from "@shared/ui/Select/Select";
 import { useTheme } from "@shared/context/useTheme";
 import Typography from "@shared/ui/Typography/Typography";
 import SettingSection from "@shared/ui/SettingSection/SettingSection";
@@ -10,15 +12,16 @@ import {
   LOCALSTORAGE_ANIMATION_TYPE,
   LOCALSTORAGE_LANGUAGE,
 } from "@shared/constants/localStorageNames";
+import { SUPPORTED_LANGUAGES } from "@shared/constants";
 
 const Settings: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("settings");
   const { isLight, toggleTheme } = useTheme();
   const [animationType, setAnimationType] = useLocalStorage<AnimationType>(
     LOCALSTORAGE_ANIMATION_TYPE,
     "fall"
   );
-  const [language, setLanguage] = useLocalStorage<"ru" | "en">(
+  const [language, setLanguage] = useLocalStorage<"ru" | "en" | "es">(
     LOCALSTORAGE_LANGUAGE,
     "en" as const
   );
@@ -27,56 +30,61 @@ const Settings: React.FC = () => {
     setAnimationType(animationType === "fall" ? "drop" : "fall");
   };
 
-  const handleLanguageToggle = () => {
-    const newLang = language === "en" ? "ru" : "en";
-    setLanguage(newLang);
-    i18n.changeLanguage(newLang);
-  };
-
-  const isRussian = language === "ru";
-
   return (
     <div className="centered">
-      <Typography.H1>{t("settings.title")}</Typography.H1>
+      <Typography.H1>{t("title")}</Typography.H1>
 
       <SettingSection
-        title={t("settings.appearance.title")}
-        description={t("settings.appearance.description")}
+        title={t("appearance.title")}
+        description={t("appearance.description")}
       >
         <Toggle
           isOn={isLight}
           onToggle={toggleTheme}
-          leftLabel={t("settings.appearance.dark")}
-          rightLabel={t("settings.appearance.light")}
-          aria-label={t("settings.appearance.theme")}
-          label={t("settings.appearance.theme")}
+          leftLabel={t("appearance.dark")}
+          rightLabel={t("appearance.light")}
+          aria-label={t("appearance.theme")}
+          label={t("appearance.theme")}
         />
       </SettingSection>
 
       <SettingSection
-        title={t("settings.animation.title")}
-        description={t("settings.animation.description")}
+        title={t("animation.title")}
+        description={t("animation.description")}
       >
         <Toggle
           isOn={animationType === "fall"}
           onToggle={handleToggle}
-          label={t("settings.animation.label")}
-          leftLabel={t("settings.animation.drop")}
-          rightLabel={t("settings.animation.fall")}
+          label={t("animation.label")}
+          leftLabel={t("animation.drop")}
+          rightLabel={t("animation.fall")}
         />
       </SettingSection>
 
       <SettingSection
-        title={t("settings.language.title")}
-        description={t("settings.language.description")}
+        title={t("language.title")}
+        description={t("language.description")}
       >
-        <Toggle
-          isOn={isRussian}
-          onToggle={handleLanguageToggle}
-          leftLabel={t("settings.language.english")}
-          rightLabel={t("settings.language.russian")}
-          aria-label="Toggle language"
-          label={t("settings.language.title")}
+        <Select
+          value={language}
+          onChange={(v) => {
+            setLanguage(v as "ru" | "en" | "es");
+            i18n.changeLanguage(v);
+          }}
+          options={SUPPORTED_LANGUAGES.map(
+            (lng) =>
+              ({
+                value: lng,
+                label:
+                  lng === "en"
+                    ? t("language.english")
+                    : lng === "ru"
+                    ? t("language.russian")
+                    : t("language.spanish"),
+              } as SelectOption<string>)
+          )}
+          label={t("language.title")}
+          placeholder={t("language.title")}
         />
       </SettingSection>
     </div>

@@ -1,0 +1,14 @@
+{
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "An error occurred. Please refresh the page or return to the home screen.",
+    "reload": "Reload page",
+    "home": "Return to home →"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "It looks like you've reached a digital void. The page you're looking for doesn't exist or has been moved.",
+    "home": "Home",
+    "startGame": "Start game"
+  }
+}

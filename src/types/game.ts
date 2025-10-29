@@ -29,6 +29,6 @@ export interface GameResults {
   board_state: "win" | "draw" | "ongoing";
   winner: {
     who: "player_1" | "player_2" | null;
-    positions: [number, number][]; // winning positions
+    positions: [number, number][];
   };
 }

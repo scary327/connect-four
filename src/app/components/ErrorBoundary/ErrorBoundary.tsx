@@ -3,9 +3,12 @@ import styles from "./ErrorBoundary.module.css";
 import Button from "../../../shared/ui/Button/Button";
 import { URLS } from "@app/router/urls";
 import Typography from "@shared/ui/Typography/Typography";
+import { useTranslation } from "react-i18next";
 
 const ErrorBoundary = () => {
   const error = useRouteError();
+
+  const { t } = useTranslation("components");
 
   let statusCode = "ERROR";
 
@@ -25,23 +28,22 @@ const ErrorBoundary = () => {
         </div>
 
         <Typography.H1 className={styles.title}>
-          Что-то пошло не так
+          {t("errorBoundary.title")}
         </Typography.H1>
         <Typography.Body className={styles.description}>
-          Произошла ошибка. Пожалуйста, обновите страницу или вернитесь на
-          главную.
+          {t("errorBoundary.description")}
         </Typography.Body>
 
         <div className={styles.actions}>
           <Button
             onClick={() => window.location.reload()}
-            ariaLabel="Обновить страницу"
+            ariaLabel={t("errorBoundary.reload")}
           >
-            Обновить страницу
+            {t("errorBoundary.reload")}
           </Button>
 
           <Button to={URLS.MENU} variant="secondary">
-            Вернуться на главную →
+            {t("errorBoundary.home")}
           </Button>
         </div>
 

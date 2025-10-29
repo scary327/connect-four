@@ -61,19 +61,16 @@ export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
     return games[gameId] ?? createInitialState(gameId);
   }, [games, gameId, createInitialState]);
 
-  // Инициализация, если игры нет (избегаем loop в useMemo)
   useEffect(() => {
     if (!games[gameId]) {
       const initialState = createInitialState(gameId);
       setGames((prev) => {
         const prevMap = prev ?? {};
-        // place new game at the beginning
         const next: { [key: string]: GameState } = {
           [gameId]: initialState,
           ...prevMap,
         };
 
-        // enforce maximum of 10 games — drop oldest keys beyond the 10th
         const keys = Object.keys(next);
         if (keys.length > 10) {
           const toRemove = keys.slice(10);

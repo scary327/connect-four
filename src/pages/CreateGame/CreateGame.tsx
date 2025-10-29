@@ -2,6 +2,7 @@ import React, { useRef, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./CreateGame.module.css";
 import Typography from "@shared/ui/Typography/Typography";
+import { useTranslation } from "react-i18next";
 import type { GameMode, GameState } from "src/types/game";
 import Button from "@shared/ui/Button/Button";
 import { useLocalStorage } from "@shared/hooks/useLocalStorage";
@@ -55,7 +56,9 @@ const CreateGame: React.FC = () => {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [selectedMode, setSelectedMode] = React.useState<GameMode>("local");
 
-  const [gameState, setGameState] = useLocalStorage<{
+  const { t } = useTranslation("create");
+
+  const [gameState] = useLocalStorage<{
     [key: string]: GameState;
   }>(LOCALSTORAGE_GAME_NAME, {});
 
@@ -79,37 +82,35 @@ const CreateGame: React.FC = () => {
         state: values,
       });
     },
-    [navigate, setGameState]
+    [navigate]
   );
 
   return (
     <div className="centered">
       {currentOnGoingGame !== null && (
         <div className={styles.resumeBanner}>
-          <Typography.H2>
-            You have an ongoing game.{" "}
-            <Button
-              className={styles.resumeLink}
-              variant="secondary"
-              onClick={() =>
-                navigate(`/game/${currentOnGoingGame.id}`, {
-                  state: {
-                    mode: currentOnGoingGame.mode,
-                    rows: currentOnGoingGame.board.length,
-                    columns: currentOnGoingGame.board[0].length,
-                    winCondition: currentOnGoingGame.winCondition ?? 4,
-                    difficulty: currentOnGoingGame.difficulty ?? "easy",
-                  },
-                })
-              }
-            >
-              Continue
-            </Button>
-          </Typography.H2>
+          <Typography.H2>{t("resume.message")}</Typography.H2>
+          <Button
+            className={styles.resumeLink}
+            variant="secondary"
+            onClick={() =>
+              navigate(`/game/${currentOnGoingGame.id}`, {
+                state: {
+                  mode: currentOnGoingGame.mode,
+                  rows: currentOnGoingGame.board.length,
+                  columns: currentOnGoingGame.board[0].length,
+                  winCondition: currentOnGoingGame.winCondition ?? 4,
+                  difficulty: currentOnGoingGame.difficulty ?? "easy",
+                },
+              })
+            }
+          >
+            {t("resume.continue")}
+          </Button>
         </div>
       )}
 
-      <Typography.H1>Create Game</Typography.H1>
+      <Typography.H1>{t("title")}</Typography.H1>
       <form
         ref={formRef}
         onSubmit={handleStartGame}
@@ -117,7 +118,7 @@ const CreateGame: React.FC = () => {
       >
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
-            Game mode
+            {t("mode.title")}
           </Typography.H2>
           <div className={styles.modeSwitch}>
             <label
@@ -133,7 +134,7 @@ const CreateGame: React.FC = () => {
                 onChange={() => setSelectedMode("local")}
                 style={{ display: "none" }}
               />
-              <Typography.ButtonText>2 Players</Typography.ButtonText>
+              <Typography.ButtonText>{t("mode.local")}</Typography.ButtonText>
             </label>
 
             <label
@@ -149,14 +150,14 @@ const CreateGame: React.FC = () => {
                 onChange={() => setSelectedMode("bot")}
                 style={{ display: "none" }}
               />
-              <Typography.ButtonText>Vs Bot</Typography.ButtonText>
+              <Typography.ButtonText>{t("mode.bot")}</Typography.ButtonText>
             </label>
           </div>
         </div>
         {selectedMode === "bot" && (
           <div className={styles.section}>
             <Typography.H2 className={styles.sectionTitle}>
-              Bot difficulty
+              {t("difficulty.title")}
             </Typography.H2>
             <div className={styles.difficultySwitch}>
               <label className={styles.difficultyButton}>
@@ -167,7 +168,9 @@ const CreateGame: React.FC = () => {
                   defaultChecked
                   style={{ display: "none" }}
                 />
-                <Typography.ButtonText>Easy</Typography.ButtonText>
+                <Typography.ButtonText>
+                  {t("difficulty.easy")}
+                </Typography.ButtonText>
               </label>
 
               <label className={styles.difficultyButton}>
@@ -177,7 +180,9 @@ const CreateGame: React.FC = () => {
                   value="medium"
                   style={{ display: "none" }}
                 />
-                <Typography.ButtonText>Medium</Typography.ButtonText>
+                <Typography.ButtonText>
+                  {t("difficulty.medium")}
+                </Typography.ButtonText>
               </label>
 
               <label className={styles.difficultyButton}>
@@ -187,18 +192,20 @@ const CreateGame: React.FC = () => {
                   value="insane"
                   style={{ display: "none" }}
                 />
-                <Typography.ButtonText>Insane</Typography.ButtonText>
+                <Typography.ButtonText>
+                  {t("difficulty.insane")}
+                </Typography.ButtonText>
               </label>
             </div>
           </div>
         )}
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
-            Board size
+            {t("board.title")}
           </Typography.H2>
           <div className={styles.inputGroup}>
             <div className={styles.inputField}>
-              <Typography.Label>Rows:</Typography.Label>
+              <Typography.Label>{t("board.rows")}</Typography.Label>
               <input
                 type="number"
                 name="rows"
@@ -209,7 +216,7 @@ const CreateGame: React.FC = () => {
               />
             </div>
             <div className={styles.inputField}>
-              <Typography.Label>Columns:</Typography.Label>
+              <Typography.Label>{t("board.columns")}</Typography.Label>
               <input
                 type="number"
                 name="columns"
@@ -223,7 +230,7 @@ const CreateGame: React.FC = () => {
         </div>
         <div className={styles.section}>
           <Typography.H2 className={styles.sectionTitle}>
-            Pieces to win
+            {t("pieces.title")}
           </Typography.H2>
           <div className={styles.inputField}>
             <input
@@ -238,7 +245,7 @@ const CreateGame: React.FC = () => {
         </div>
 
         <Button type="submit" variant="primary">
-          Start Game
+          {t("start")}
         </Button>
       </form>
     </div>

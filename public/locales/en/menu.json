@@ -1,0 +1,8 @@
+{
+  "title": "Menu",
+  "items": {
+    "play": "Play",
+    "settings": "Settings",
+    "localHistory": "Local History"
+  }
+}

@@ -39,7 +39,6 @@
   background: linear-gradient(180deg, rgba(124, 77, 255, 0.03), transparent);
 }
 
-/* purple focus / hover like buttons */
 .card:hover,
 .card:focus-within {
   transform: translateY(-4px);

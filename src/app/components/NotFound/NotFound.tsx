@@ -2,8 +2,11 @@ import styles from "./NotFound.module.css";
 import Button from "../../../shared/ui/Button/Button";
 import { URLS } from "@app/router/urls";
 import Typography from "@shared/ui/Typography/Typography";
+import { useTranslation } from "react-i18next";
 
 const NotFound = () => {
+  const { t } = useTranslation("components");
+
   return (
     <div className={styles.notFound}>
       <div className={styles.content}>
@@ -14,20 +17,19 @@ const NotFound = () => {
         </div>
 
         <Typography.H1 className={styles.title}>
-          Страница не найдена
+          {t("notFound.title")}
         </Typography.H1>
         <Typography.Body className={styles.description}>
-          Кажется, вы попали в цифровую пустоту. Страница, которую вы ищете, не
-          существует или была перемещена.
+          {t("notFound.description")}
         </Typography.Body>
 
         <div className={styles.actions}>
           <Button to={URLS.MENU} variant="primary">
-            На главную
+            {t("notFound.home")}
           </Button>
 
           <Button to={URLS.GAME} variant="secondary">
-            Начать игру
+            {t("notFound.startGame")}
           </Button>
         </div>
 

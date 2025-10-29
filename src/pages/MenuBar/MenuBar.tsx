@@ -2,28 +2,30 @@ import s from "./MenuBar.module.css";
 import Button from "@shared/ui/Button/Button";
 import { useNavigate } from "react-router-dom";
 import Typography from "@shared/ui/Typography/Typography";
+import { useTranslation } from "react-i18next";
 
 const MENU_ITEMS = [
-  { label: "PLAY", link: "/game" },
-  { label: "SETTINGS", link: "/settings" },
-  { label: "LOCAL HISTORY", link: "/history" },
+  { key: "play", link: "/game" },
+  { key: "settings", link: "/settings" },
+  { key: "localHistory", link: "/history" },
 ];
 
 const MenuBar = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation("menu");
 
   return (
     <div className="centered">
-      <Typography.H1>Menu</Typography.H1>
+      <Typography.H1>{t("title")}</Typography.H1>
       <ul className={s.menuList}>
         {MENU_ITEMS.map((item) => (
           <Button
-            key={item.label}
+            key={item.key}
             onClick={() => navigate(item.link)}
             className={s.menuButton}
             size="extraLarge"
           >
-            {item.label}
+            {t(`items.${item.key}`)}
           </Button>
         ))}
       </ul>

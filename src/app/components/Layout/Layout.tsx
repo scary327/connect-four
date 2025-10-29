@@ -4,20 +4,15 @@ import styles from "./Layout.module.css";
 import { URLS } from "@app/router/urls";
 import Button from "@shared/ui/Button/Button";
 import Typography from "@shared/ui/Typography/Typography";
-
-const pageTitles: Record<keyof typeof URLS, string> = {
-  MENU: "MENU",
-  GAME: "GAME",
-  HISTORY: "HISTORY",
-  SETTINGS: "SETTINGS",
-  GAME_SESSION: "GAME SESSION",
-};
+import { useTranslation } from "react-i18next";
 
 const Header: React.FC<{
   isHome: boolean;
   title: string;
   onBack: () => void;
 }> = memo(({ isHome, title, onBack }) => {
+  const { t } = useTranslation("layout");
+
   return (
     <header className={`${styles.header} ${isHome ? styles.hidden : ""}`}>
       <Button
@@ -38,7 +33,7 @@ const Header: React.FC<{
         >
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
-        Menu
+        {t("back")}
       </Button>
       <Typography.H2 className={styles.pageTitle}>{title}</Typography.H2>
       <div className={styles.spacer} />
@@ -49,13 +44,14 @@ const Header: React.FC<{
 const Layout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation("layout");
 
   const routeKey = (Object.keys(URLS) as Array<keyof typeof URLS>).find((key) =>
     Boolean(matchPath(URLS[key], location.pathname))
   ) as keyof typeof URLS | undefined;
 
   const isHomePage = location.pathname === URLS.MENU;
-  const pageTitle = routeKey ? pageTitles[routeKey] : pageTitles.MENU;
+  const pageTitle = routeKey ? t(routeKey.toLowerCase()) : t("menu");
 
   const handleBack = () => navigate(-1);
 

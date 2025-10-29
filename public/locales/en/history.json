@@ -1,0 +1,20 @@
+{
+  "title": "Local history",
+  "empty": "No saved games yet.",
+  "labels": {
+    "mode": "Mode",
+    "size": "Size",
+    "toWin": "To win",
+    "result": "Result"
+  },
+  "status": {
+    "draw": "Draw",
+    "ongoing": "Ongoing",
+    "player1": "Player 1",
+    "player2": "Player 2",
+    "vsBot": "Vs Bot ({{difficulty}})",
+    "you": "You",
+    "bot": "Bot"
+  },
+  "openGame": "Open game {{id}}"
+}

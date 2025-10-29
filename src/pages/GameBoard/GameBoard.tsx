@@ -174,7 +174,6 @@ const GameBoard: React.FC<GameBoardProps> = memo(
       )
     );
 
-    // Build a set of winning cell keys for quick lookup
     const winningSet = new Set<string>();
     if (game.winningLine) {
       for (const [r, c] of game.winningLine) {

@@ -1,0 +1,27 @@
+{
+  "title": "Crear partida",
+  "resume": {
+    "message": "Tienes una partida en curso.",
+    "continue": "Continuar"
+  },
+  "mode": {
+    "title": "Modo de juego",
+    "local": "2 Jugadores",
+    "bot": "Contra Bot"
+  },
+  "difficulty": {
+    "title": "Dificultad del bot",
+    "easy": "Fácil",
+    "medium": "Medio",
+    "insane": "Demencial"
+  },
+  "board": {
+    "title": "Tamaño del tablero",
+    "rows": "Filas:",
+    "columns": "Columnas:"
+  },
+  "pieces": {
+    "title": "Fichas para ganar"
+  },
+  "start": "Comenzar partida"
+}

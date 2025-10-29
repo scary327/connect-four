@@ -1,0 +1,20 @@
+{
+  "title": "Historial local",
+  "empty": "No hay partidas guardadas todavía.",
+  "labels": {
+    "mode": "Modo",
+    "size": "Tamaño",
+    "toWin": "Para ganar",
+    "result": "Resultado"
+  },
+  "status": {
+    "draw": "Empate",
+    "ongoing": "En curso",
+    "player1": "Jugador 1",
+    "player2": "Jugador 2",
+    "vsBot": "Contra Bot ({{difficulty}})",
+    "you": "Tú",
+    "bot": "Bot"
+  },
+  "openGame": "Abrir partida {{id}}"
+}

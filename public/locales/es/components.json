@@ -1,0 +1,14 @@
+{
+  "errorBoundary": {
+    "title": "Algo salió mal",
+    "description": "Ocurrió un error. Por favor, actualice la página o regrese a la pantalla principal.",
+    "reload": "Recargar página",
+    "home": "Volver al inicio →"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "Parece que has llegado a un vacío digital. La página que buscas no existe o ha sido movida.",
+    "home": "Inicio",
+    "startGame": "Iniciar partida"
+  }
+}

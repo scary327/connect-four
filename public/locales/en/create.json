@@ -1,0 +1,27 @@
+{
+  "title": "Create Game",
+  "resume": {
+    "message": "You have an ongoing game.",
+    "continue": "Continue"
+  },
+  "mode": {
+    "title": "Game mode",
+    "local": "2 Players",
+    "bot": "Vs Bot"
+  },
+  "difficulty": {
+    "title": "Bot difficulty",
+    "easy": "Easy",
+    "medium": "Medium",
+    "insane": "Insane"
+  },
+  "board": {
+    "title": "Board size",
+    "rows": "Rows:",
+    "columns": "Columns:"
+  },
+  "pieces": {
+    "title": "Pieces to win"
+  },
+  "start": "Start Game"
+}
