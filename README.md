@@ -1,73 +1,25 @@
-# React + TypeScript + Vite
+# Connect 4 (4 в ряд)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-проекты: игра "4 в ряд" с поддержкой локальных сессий, тем, переводов и алгоритмического бота на Rust (WebAssembly).
 
-Currently, two official plugins are available:
+## Как запустить
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Docker-контейнер:
 
-## React Compiler
-
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone git@github.com:scary327/connect-four.git
+cd connect-four
+docker build -t connect4 .
+docker run -p 5173:5173 connect4
+# затем откройте http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Основные фичи
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Переводы (i18n): приложение поддерживает английский (en), русский (ru) и испанский (es). Переводы лежат в `public/locales/<lng>/<namespace>.json` и загружаются по namespace с помощью i18next/react-i18next.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Темы: светлая и тёмная тема, переключение сохраняется в localStorage и применяется без перезагрузки.
+
+- Смена анимации падения фишек: доступны стили анимации (например, "Drop" - анимация падения внутри клетки и "Fall" - анимация падения по всей колонке) — выбор влияет на визуальное поведение фишек при постановке.
+
+- Бот на Rust + WebAssembly: основная логика бота в `wasm/connect4_bot` (функция `compute_move`). Варианты сложности: `easy`, `medium`, `insane` (от простых эвристик до minimax/alpha-beta). WASM собирается через `wasm-pack` и подключается в фронтенд.
