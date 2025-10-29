@@ -41,5 +41,5 @@ body {
   align-items: center;
   padding: 20px 0;
   overflow-y: auto;
-  min-height: calc(100vh - var(--layout-height));
+  min-height: calc(100vh - var(--layout-height) - 40px);
 }
