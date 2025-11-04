@@ -7,7 +7,7 @@
 - Docker-контейнер:
   Среднее время скачивания 10 минут!
 
-  <p><strong><span style="color:#b00020; background-color:#fff1f0; padding:6px 8px; border-radius:4px; font-size:1.05em;">Внимание: загрузка образа может занять около 10 минут из‑за проблем с Docker — пожалуйста, будьте готовы подождать.</span></strong></p>
+  <p><strong><span style="color:#b00020; background-color:#fff1f0; padding:6px 8px; border-radius:4px; font-size:1.05em;">Внимание: загрузка образа может занять около 10 минут из‑за проблем с Docker в России — пожалуйста, будьте готовы подождать.</span></strong></p>
 
 ```bash
 git clone git@github.com:scary327/connect-four.git

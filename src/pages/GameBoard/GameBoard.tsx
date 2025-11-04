@@ -5,7 +5,7 @@ import { useGame } from "@shared/hooks/useGame";
 import { useGameBoard } from "@shared/hooks/useGameBoard";
 import Column from "@components/Game/Column/Column";
 import GameInfo from "@components/Game/GameInfo/GameInfo";
-import { findAvailableRow, generateGameId } from "@shared/utils/gameHelpers";
+import { findAvailableRow } from "@shared/utils/gameHelpers";
 import type { GameMode } from "src/types/game";
 
 interface GameBoardProps {
@@ -25,7 +25,7 @@ const GameBoard: React.FC<GameBoardProps> = memo(
     difficulty = "easy",
   }) => {
     const params = useParams();
-    const gameId = params.id ?? generateGameId();
+    const gameId = params.id || "0";
 
     const game = useGame(
       { rows, columns, winCondition, mode, difficulty },

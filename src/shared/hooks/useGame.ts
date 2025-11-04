@@ -1,16 +1,8 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { useBotWasm } from "./useBotWasm";
-
 import type { GameState, GameConfig, GameMode } from "src/types/game";
-import {
-  checkWinner,
-  getWinningLine,
-  isBoardFull,
-  findAvailableRow,
-  switchPlayer,
-} from "../utils/gameHelpers";
 import { useLocalStorage } from "./useLocalStorage";
 import { LOCALSTORAGE_GAME_NAME } from "@shared/constants/localStorageNames";
+import { GameEngine } from "../engine/GameEngine";
 
 interface UseGameReturn extends GameState {
   makeMove: (column: number, isBot?: boolean) => boolean;
@@ -22,122 +14,34 @@ interface UseGameReturn extends GameState {
 
 export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
   const { rows, columns, winCondition, mode, difficulty = "easy" } = config;
-
   const [gameMode, setGameMode] = useState<GameMode>(mode);
-
-  const createInitialState = useCallback(
-    (id: string, currentMode: GameMode = gameMode): GameState => ({
-      id,
-      mode: currentMode,
-      board: Array.from({ length: rows }, () => Array(columns).fill(null)),
-      currentPlayer: "player1",
-      moves: [],
-      winner: null,
-      winningLine: undefined,
-      winCondition: winCondition,
-      difficulty: difficulty,
-      isGameOver: false,
-    }),
-    [rows, columns, gameMode, winCondition, difficulty]
-  );
-
   const [games, setGames] = useLocalStorage<{ [key: string]: GameState }>(
     LOCALSTORAGE_GAME_NAME,
     {}
   );
+  const [pendingBotMove, setPendingBotMove] = useState<number | null>(null);
 
-  const updateGameById = useCallback(
-    (id: string, updater: (state: GameState) => GameState): void => {
-      setGames((prev) => {
-        if (!prev || !(id in prev)) return prev;
-        const current = prev[id];
-        return { ...prev, [id]: updater(current) };
-      });
-    },
-    [setGames]
-  );
+  const engine = useMemo(() => {
+    const e = new GameEngine(config, setGames);
+    e.setGamesStorage(games);
+    return e;
+  }, [config, setGames, games]);
 
-  const gameState = useMemo((): GameState => {
-    return games[gameId] ?? createInitialState(gameId);
-  }, [games, gameId, createInitialState]);
+  const gameState = useMemo(() => engine.getGame(gameId), [engine, gameId]);
 
   useEffect(() => {
-    if (!games[gameId]) {
-      const initialState = createInitialState(gameId);
-      setGames((prev) => {
-        const prevMap = prev ?? {};
-        const next: { [key: string]: GameState } = {
-          [gameId]: initialState,
-          ...prevMap,
-        };
-
-        const keys = Object.keys(next);
-        if (keys.length > 10) {
-          const toRemove = keys.slice(10);
-          for (const k of toRemove) {
-            delete next[k];
-          }
-        }
-
-        return next;
-      });
-    }
-  }, [gameId, games, createInitialState, setGames]);
+    engine.ensureGameExists(gameId);
+  }, [engine, gameId]);
 
   const makeMove = useCallback(
     (column: number, isBot: boolean = false): boolean => {
-      if (gameState.isGameOver) return false;
-      if (gameMode === "bot" && gameState.currentPlayer === "player2" && !isBot)
-        return false;
-      if (column < 0 || column >= columns) return false;
-
-      const availableRow = findAvailableRow(gameState.board, column);
-      if (availableRow === -1) return false;
-
-      const newBoard = gameState.board.map((row) => [...row]);
-      newBoard[availableRow][column] = gameState.currentPlayer;
-
-      const hasWon = checkWinner(
-        newBoard,
-        availableRow,
-        column,
-        gameState.currentPlayer,
-        winCondition
-      );
-
-      const winningLine = hasWon
-        ? getWinningLine(
-            newBoard,
-            availableRow,
-            column,
-            gameState.currentPlayer,
-            winCondition
-          ) || undefined
-        : undefined;
-
-      const isDraw = !hasWon && isBoardFull(newBoard);
-
-      const newState: GameState = {
-        ...gameState,
-        board: newBoard,
-        moves: [...gameState.moves, column],
-        winner: hasWon ? gameState.currentPlayer : isDraw ? "draw" : null,
-        winningLine,
-        isGameOver: hasWon || isDraw,
-        currentPlayer:
-          hasWon || isDraw
-            ? gameState.currentPlayer
-            : switchPlayer(gameState.currentPlayer),
-      };
-
-      updateGameById(gameId, () => newState);
-
+      const newState = engine.makeMove(gameState, column, isBot);
+      if (!newState) return false;
+      engine.updateGame(gameId, () => newState);
       return true;
     },
-    [gameState, columns, winCondition, gameMode, gameId, updateGameById]
+    [engine, gameState, gameId]
   );
-
-  const [pendingBotMove, setPendingBotMove] = useState<number | null>(null);
 
   const applyBotMove = useCallback(
     (column: number) => {
@@ -147,30 +51,23 @@ export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
     [makeMove]
   );
 
-  const botMoveFn = useBotWasm();
   useEffect(() => {
     if (
       gameMode === "bot" &&
       gameState.currentPlayer === "player2" &&
-      !gameState.isGameOver &&
-      botMoveFn
+      !gameState.isGameOver
     ) {
       let cancelled = false;
       const id = setTimeout(async () => {
-        const column = await botMoveFn(
+        const column = await engine.getBotMove(
           gameState.moves,
           difficulty,
           rows,
           columns,
           winCondition
         );
-
-        if (cancelled) return;
-        if (typeof column === "number" && column >= 0 && column < columns) {
-          setPendingBotMove(column);
-        }
+        if (!cancelled && typeof column === "number") setPendingBotMove(column);
       }, 40);
-
       return () => {
         cancelled = true;
         clearTimeout(id);
@@ -180,7 +77,7 @@ export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
     gameMode,
     gameState.currentPlayer,
     gameState.isGameOver,
-    botMoveFn,
+    engine,
     gameState.moves,
     difficulty,
     rows,
@@ -189,17 +86,17 @@ export const useGame = (config: GameConfig, gameId: string): UseGameReturn => {
   ]);
 
   const resetGame = useCallback(() => {
-    const newInitial = createInitialState(gameId);
-    updateGameById(gameId, () => newInitial);
-  }, [createInitialState, gameId, updateGameById]);
+    engine.updateGame(gameId, () => engine.createInitialState(gameId));
+  }, [engine, gameId]);
 
   const handleSetGameMode = useCallback(
     (newMode: GameMode) => {
       setGameMode(newMode);
-      const newInitial = createInitialState(gameId, newMode);
-      updateGameById(gameId, () => newInitial);
+      engine.updateGame(gameId, () =>
+        engine.createInitialState(gameId, newMode)
+      );
     },
-    [createInitialState, gameId, updateGameById]
+    [engine, gameId]
   );
 
   return {
