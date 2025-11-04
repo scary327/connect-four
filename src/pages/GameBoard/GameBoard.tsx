@@ -115,7 +115,7 @@ const GameBoard: React.FC<GameBoardProps> = memo(
       applyBotMove,
     ]);
 
-    const prevMovesRef = React.useRef<number>(gameMoves.length);
+    const prevMovesRef = React.useRef<number>(gameMoves.length || 0);
 
     useEffect(() => {
       if (gameMoves.length > prevMovesRef.current) {

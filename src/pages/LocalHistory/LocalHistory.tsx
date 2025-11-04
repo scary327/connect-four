@@ -29,6 +29,26 @@ const LocalHistory: React.FC = () => {
     {}
   );
 
+  const getGameInfo = (g: GameState) => {
+    const title =
+      g.mode === "bot"
+        ? t("status.vsBot", { difficulty: g.difficulty ?? "easy" })
+        : "2 Players";
+    const sizeText = `${g.board.length} × ${g.board[0]?.length ?? 0}`;
+    const resultLabel =
+      g.winner === "draw"
+        ? t("status.draw")
+        : g.winner
+        ? g.mode === "bot"
+          ? getPlayerName(g.winner as Player, "bot")
+          : g.winner === "player1"
+          ? t("status.player1")
+          : t("status.player2")
+        : t("status.ongoing");
+
+    return { title, sizeText, resultLabel };
+  };
+
   const list = useMemo(() => {
     const values = Object.values(games ?? {});
     return values.sort((a, b) => {
@@ -55,21 +75,7 @@ const LocalHistory: React.FC = () => {
       <Typography.H1>{t("title")}</Typography.H1>
       <div className={styles.list}>
         {list.map((g) => {
-          const title =
-            g.mode === "bot"
-              ? t("status.vsBot", { difficulty: g.difficulty ?? "easy" })
-              : "2 Players";
-          const sizeText = `${g.board.length} × ${g.board[0]?.length ?? 0}`;
-          const resultLabel =
-            g.winner === "draw"
-              ? t("status.draw")
-              : g.winner
-              ? g.mode === "bot"
-                ? getPlayerName(g.winner as Player, "bot")
-                : g.winner === "player1"
-                ? t("status.player1")
-                : t("status.player2")
-              : t("status.ongoing");
+          const { title, sizeText, resultLabel } = getGameInfo(g);
 
           return (
             <div

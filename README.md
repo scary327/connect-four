@@ -5,6 +5,9 @@
 ## Как запустить
 
 - Docker-контейнер:
+  Среднее время скачивания 10 минут!
+
+  <p><strong><span style="color:#b00020; background-color:#fff1f0; padding:6px 8px; border-radius:4px; font-size:1.05em;">Внимание: загрузка образа может занять около 10 минут из‑за проблем с Docker — пожалуйста, будьте готовы подождать.</span></strong></p>
 
 ```bash
 git clone git@github.com:scary327/connect-four.git
@@ -13,8 +16,6 @@ docker build -t connect4 .
 docker run -p 5173:5173 connect4
 # затем откройте http://localhost:5173
 ```
-
-PS: Последнее время с докером проблемы, установка может проходить с ошибками - на такой случай просто запустить заново, пока не пройдет
 
 ## Основные фичи
 

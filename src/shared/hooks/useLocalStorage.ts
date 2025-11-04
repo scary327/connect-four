@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 /**
- * Хук для работы с localStorage с поддержкой TypeScript
+ * Хук для работы с localStorage
  * @param key - ключ в localStorage
  * @param defaultValue - значение по умолчанию
  * @returns [значение, функция для обновления значения]
