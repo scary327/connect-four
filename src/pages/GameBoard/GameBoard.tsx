@@ -6,14 +6,14 @@ import { useGameBoard } from "@shared/hooks/useGameBoard";
 import Column from "@components/Game/Column/Column";
 import GameInfo from "@components/Game/GameInfo/GameInfo";
 import { findAvailableRow } from "@shared/utils/gameHelpers";
-import type { GameMode } from "src/types/game";
+import type { Difficulty, GameMode } from "src/types/game";
 
 interface GameBoardProps {
   rows: number;
   columns: number;
   winCondition?: number;
   mode?: GameMode;
-  difficulty?: "easy" | "medium" | "insane";
+  difficulty?: Difficulty;
 }
 
 const GameBoard: React.FC<GameBoardProps> = memo(

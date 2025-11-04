@@ -6,6 +6,23 @@ import Button from "@shared/ui/Button/Button";
 import Typography from "@shared/ui/Typography/Typography";
 import { useTranslation } from "react-i18next";
 
+const BackArrow: React.FC<{ width?: number; height?: number }> = memo(
+  ({ width = 20, height = 20 }) => (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M19 12H5M12 19l-7-7 7-7" />
+    </svg>
+  )
+);
+
 const Header: React.FC<{
   isHome: boolean;
   title: string;
@@ -21,18 +38,7 @@ const Header: React.FC<{
         onClick={onBack}
         className={styles.backButton}
       >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
+        <BackArrow width={20} height={20} />
         {t("back")}
       </Button>
       <Typography.H2 className={styles.pageTitle}>{title}</Typography.H2>

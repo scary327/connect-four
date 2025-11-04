@@ -6,7 +6,7 @@ import NotFound from "@app/components/NotFound/NotFound";
 const MenuBar = lazy(() => import("../../pages/MenuBar/MenuBar"));
 const Settings = lazy(() => import("../../pages/Settings/Settings"));
 const GameSession = lazy(() => import("../../pages/GameBoard/GameSession"));
-const CreateGame = lazy(() => import("../../pages/CreateGame/CreateGame"));
+const GameCreator = lazy(() => import("../../pages/GameCreator/GameCreator"));
 const LocalHistory = lazy(
   () => import("../../pages/LocalHistory/LocalHistory")
 );
@@ -18,7 +18,7 @@ export const PublicRoutes: RouteObject[] = [
   },
   {
     path: URLS.GAME,
-    element: <CreateGame />,
+    element: <GameCreator />,
   },
   {
     path: URLS.GAME_SESSION,

@@ -1,15 +1,13 @@
 import React, { useRef, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./CreateGame.module.css";
+import styles from "./GameCreator.module.css";
 import Typography from "@shared/ui/Typography/Typography";
 import { useTranslation } from "react-i18next";
-import type { GameMode, GameState } from "src/types/game";
+import type { Difficulty, GameMode, GameState } from "src/types/game";
 import Button from "@shared/ui/Button/Button";
 import { useLocalStorage } from "@shared/hooks/useLocalStorage";
 import { LOCALSTORAGE_GAME_NAME } from "@shared/constants/localStorageNames";
 import { generateGameId } from "@shared/utils/gameHelpers";
-
-type Difficulty = "easy" | "medium" | "hard" | "insane";
 
 type FormValues = {
   mode: GameMode;
